@@ -447,6 +447,22 @@ body:not(.public) .pubnav{display:none}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--encre);color:var(--lin);padding:11px 18px;border-radius:999px;font-weight:500;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+.sheet{max-width:460px}
+.sh-auto{display:grid;gap:8px;margin-top:6px}
+.sh-auto p{margin:0;font-size:14px}
+.sh-or{text-align:center;font-size:13px;margin:14px 0 4px!important}
+.xbig{width:100%;padding:14px 20px;font-size:16px;justify-content:center}
+.sh-steps{list-style:none;margin:10px 0 0;padding:0}
+.sh-steps li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.sh-steps li:first-child{border-top:0}
+.sh-steps li>div{min-width:0;display:grid;gap:2px}
+.sh-steps strong{font-size:15px}
+.sh-steps span{font-size:14px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sh-steps .sh-desc{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sh-tip{font-size:13px!important;margin:12px 0 0!important}
+.inst{margin:10px 0 0;padding-left:1.3em;display:grid;gap:8px;font-size:15px}
+.inst code{font-size:13px;background:var(--soft);padding:1px 6px;border-radius:6px}
+@media (max-width:540px){.modal{align-items:end;padding:0}.modal-card.sheet{max-width:none;border-radius:20px 20px 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}}
 </style>
 </head>
 <body>
@@ -661,7 +677,7 @@ body:not(.public) .pubnav{display:none}
       <div class="step-h"><span class="n">4</span><h2>Tes annonces</h2></div>
       <div class="alert hidden" id="staleBar" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>Tu as modifié la fiche ou les sites : actualise les annonces.</span><button class="btn go sm" type="button" id="regen">Actualiser les annonces</button></div>
       <div class="listings" id="listings"></div>
-      <p class="ext-note">« Publier sur… » copie l’annonce pour l’extension The Sellist et ouvre le site : colle-la dans le panneau, puis copie chaque champ dans le formulaire.</p>
+      <p class="ext-note">« Publier sur… » prépare tout : tes photos, le titre et la description, puis ouvre le site ou l’app.</p>
       <div class="actions"><button class="btn go" id="save" type="button">Ajouter à mes articles</button></div>
     </section>
     </div>
@@ -1360,6 +1376,108 @@ function renderListings(){
       </div></article>`}).join("");
   $("#save").textContent=current.id?"Mettre à jour dans mes articles":"Ajouter à mes articles";
 }
+/* ================= publier : feuille « tout prêt » (mobile + extension) ================= */
+// The Sellist extension (extension-sellist/) announces itself with data-sellist-app on <html>.
+const hasApp=()=>!!document.documentElement.dataset.sellistApp;
+const canShareFiles=f=>{try{return !!(navigator.canShare&&navigator.canShare({files:f}))}catch(e){return false}};
+function listingText(id){const l=current.listings[id];return {titre:l.titre||"",description:l.description||"",prix:l.prix??""}}
+async function photoFiles(){
+  const out=[];let i=1;
+  for(const ph of photos.slice(0,20)){const b=await blobOf(ph);const ext=(b.type.split("/")[1]||"jpg").replace("jpeg","jpg");out.push(new File([b],`the-sellist-${i++}.${ext}`,{type:b.type||"image/jpeg"}))}
+  return out;
+}
+async function savePhotos(){
+  const files=await photoFiles();
+  if(!files.length){toast("Pas de photo pour cet article.");return}
+  if(canShareFiles(files)){
+    try{await navigator.share({files});toast("Choisis « Enregistrer les images » pour les avoir dans ta galerie.")}
+    catch(e){if(e&&e.name!=="AbortError")toast("Partage impossible. Réessaie.")}
+    return}
+  // ordinateur : on télécharge les photos une par une
+  for(const f of files){const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+  toast(files.length>1?`${files.length} photos téléchargées.`:"Photo téléchargée.");
+}
+async function fillWithApp(id){
+  const btn=document.querySelector("[data-sh=auto]");if(btn)btn.disabled=true;
+  try{
+    const imgs=[];for(const ph of photos.slice(0,20))imgs.push(await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;blobOf(ph).then(b=>r.readAsDataURL(b),rej)}));
+    const l=current.listings[id];
+    const job={site:id,url:P[id].url,fiche:current.fiche,titre:l.titre||"",description:l.description||"",prix:l.prix??"",
+      champs:(l.fields||[]).filter(fd=>fd.value).map(fd=>({label:fd.label,valeur:fd.value})),photos:imgs};
+    window.postMessage({source:"sellist-app",type:"FILL",id:uid(),job},"*");
+  }catch(e){toast("Impossible de préparer les photos. Réessaie.");if(btn)btn.disabled=false}
+}
+window.addEventListener("message",e=>{
+  if(e.source!==window||!e.data||e.data.source!=="sellist-app-ext")return;
+  if(e.data.type==="FILL_RESULT"){
+    const btn=document.querySelector("[data-sh=auto]");if(btn)btn.disabled=false;
+    toast(e.data.ok?"C’est rempli. Vérifie l’annonce sur l’onglet ouvert, puis publie.":(e.data.error||"L’extension n’a pas répondu. Recharge la page et réessaie."));
+  }
+});
+window.postMessage({source:"sellist-app",type:"PING"},"*");
+function openInstallSheet(){
+  const m=document.createElement("div");m.className="modal";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Installer l’extension");
+  m.innerHTML=`<div class="modal-card sheet">
+    <h3>Installe l’extension <em class="serif">The Sellist</em></h3>
+    <p>2 minutes, une seule fois. Elle marche sur Chrome, sur ordinateur.</p>
+    <ol class="inst">
+      <li><a class="btn go sm" href="the-sellist-publier.zip" download>Télécharger l’extension</a> puis double-clique sur le fichier pour le décompresser.</li>
+      <li>Dans Chrome, tape <code>chrome://extensions</code> dans la barre d’adresse.</li>
+      <li>En haut à droite, active le <strong>Mode développeur</strong>.</li>
+      <li>Clique sur <strong>Charger l’extension non empaquetée</strong> et choisis le dossier <code>extension-sellist</code>.</li>
+      <li>Reviens ici et recharge la page.</li>
+    </ol>
+    <div class="actions"><button class="btn" type="button" data-x>Fermer</button></div></div>`;
+  document.body.appendChild(m);
+  const close=()=>{m.remove();document.removeEventListener("keydown",onKey)};
+  const onKey=e=>{if(e.key==="Escape")close()};
+  document.addEventListener("keydown",onKey);
+  m.addEventListener("click",e=>{if(e.target===m||e.target.closest("[data-x]"))close()});
+}
+function openPublishSheet(id){
+  if(!current||!current.listings[id])return;
+  const p=P[id],t=listingText(id),n=Math.min(photos.length,20);
+  const m=document.createElement("div");m.className="modal";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Publier sur "+p.name);
+  m.innerHTML=`<div class="modal-card sheet">
+    <h3>Publier sur ${esc(p.name)}</h3>
+    ${hasApp()?`<div class="sh-auto"><button class="btn go xbig" type="button" data-sh="auto">Remplir automatiquement</button>
+      <p>Un onglet ${esc(p.name)} s’ouvre et on remplit l’annonce, photos comprises. Tu vérifies, tu publies.</p></div>
+      <p class="sh-or">ou à la main</p>`:""}
+    <ol class="sh-steps">
+      <li><div><strong>Tes photos</strong><span>${n?`${n} photo${n>1?"s":""}, dans l’ordre`:"Aucune photo ajoutée"}</span></div>
+        <button class="btn sm${hasApp()?"":" go"}" type="button" data-sh="photos" ${n?"":"disabled"}>Enregistrer</button></li>
+      <li><div><strong>Le titre</strong><span class="sh-val">${esc(t.titre)||"—"}</span></div>
+        <button class="btn sm" type="button" data-sh="titre">Copier</button></li>
+      <li><div><strong>La description</strong><span class="sh-val sh-desc">${esc(t.description)||"—"}</span></div>
+        <button class="btn sm" type="button" data-sh="description">Copier</button></li>
+      <li><div><strong>Le prix</strong><span class="sh-val">${t.prix!==""?esc(t.prix)+" €":"—"}</span></div></li>
+    </ol>
+    <div class="actions"><button class="btn${hasApp()?"":" go"}" type="button" data-sh="open">Copier la description et ouvrir ${esc(p.name)}</button><button class="btn" type="button" data-sh="close">Fermer</button></div>
+    <p class="sh-tip">Sur ton téléphone, l’app ${esc(p.name)} s’ouvre si elle est installée. Reviens ici pour copier le titre.</p>
+    ${!hasApp()&&matchMedia("(pointer:fine)").matches?`<p class="sh-tip sh-ext">Sur ordinateur, l’extension The Sellist remplit tout pour toi, photos comprises. <button class="linkbtn" type="button" data-sh="install">L’installer</button></p>`:""}
+  </div>`;
+  document.body.appendChild(m);
+  const close=()=>{m.remove();document.removeEventListener("keydown",onKey)};
+  const onKey=e=>{if(e.key==="Escape")close()};
+  document.addEventListener("keydown",onKey);
+  m.addEventListener("click",async e=>{
+    if(e.target===m){close();return}
+    const b=e.target.closest("[data-sh]");if(!b)return;
+    const a=b.dataset.sh;
+    if(a==="close")close();
+    else if(a==="auto"){fillWithApp(id);setTimeout(()=>{const x=m.querySelector("[data-sh=auto]");if(x)x.disabled=false},15000)}
+    else if(a==="install"){close();openInstallSheet()}
+    else if(a==="photos")savePhotos();
+    else if(a==="titre"||a==="description"){const v=listingText(id)[a];if(v)copy(v);else toast("Ce champ est vide.")}
+    else if(a==="open"){
+      const d=listingText(id).description;
+      try{if(d)await navigator.clipboard.writeText(d)}catch(err){}
+      window.open(p.url,"_blank","noopener");
+      toast(d?"Description copiée. Colle-la dans l’annonce.":"Le site s’ouvre.");
+    }
+  });
+  (m.querySelector("[data-sh=auto]")||m.querySelector("[data-sh=photos]:not([disabled])")||m.querySelector("[data-sh=open]")).focus();
+}
 function articleForExt(it){
   const f=it.fiche||{};
   return {id:String(it.ref||it.id||"tmp"),nom:[f.marque,f.titre].filter(Boolean).join(" ")||"Article",
@@ -1380,11 +1498,7 @@ $("#listings").addEventListener("input",e=>{
 });
 $("#listings").addEventListener("click",e=>{
   const pb=e.target.closest("[data-publish]");
-  if(pb){const id=pb.dataset.publish;
-    const payload=JSON.stringify({app:"The Sellist",type:"article",site:id,article:articleForExt(current)});
-    const w=window.open(P[id].url,"_blank","noopener");
-    navigator.clipboard.writeText(payload).then(()=>toast(`Annonce copiée pour l’extension. Sur ${P[id].name}, ouvre The Sellist et colle-la.`)).catch(()=>toast("Copie impossible : exporte depuis Mon compte."));
-    return}
+  if(pb){openPublishSheet(pb.dataset.publish);return}
   const dt=e.target.closest("[data-ldetail]");
   if(dt){const id=dt.closest(".listing").dataset.p;openListings.has(id)?openListings.delete(id):openListings.add(id);renderListings();return}
   const f=e.target.closest("[data-copyfield]");

@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "The Sellist · Publier",
+  "version": "0.1.0",
+  "description": "Remplit tes annonces Vinted, Vestiaire Collective, Leboncoin et eBay depuis The Sellist. Tu vérifies, tu publies.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "The Sellist",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://morganesebag-hub.github.io/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*"
+      ],
+      "js": ["bridge.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://*.vinted.fr/*",
+        "https://*.vestiairecollective.com/*",
+        "https://*.leboncoin.fr/*",
+        "https://*.ebay.fr/*"
+      ],
+      "js": ["filler.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

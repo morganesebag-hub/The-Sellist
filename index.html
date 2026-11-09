@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F5F2ED">
 <title>The Sellist</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-110 -305 1120 1120'%3E%3Crect x='-110' y='-305' width='1120' height='1120' rx='240' fill='%23ffffff'/%3E%3Cpath d='M875 318 L550 322 C400 330 90 390 70 420 C60 445 160 445 280 446 L830 462 C660 465 460 480 5 545' fill='none' stroke='%23141414' stroke-width='60' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M460 5 C465 170 485 370 505 480 C512 515 520 510 508 470 C500 445 495 435 490 438 C440 370 360 310 190 288 C160 284 165 300 205 297' fill='none' stroke='%23141414' stroke-width='60' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='461' cy='-20' r='85' fill='%231E5A46'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="The Sellist">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffffff'/%3E%3Ctext x='50' y='78' text-anchor='middle' font-family='Helvetica, Arial, sans-serif' font-size='76' fill='%23141414'%3ES%3C/text%3E%3Ctext x='44' y='70' text-anchor='middle' font-family='Georgia, serif' font-style='italic' font-size='72' fill='%231E5A46'%3ET%3C/text%3E%3Ccircle cx='76' cy='80' r='7' fill='%231E5A46'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
@@ -35,7 +41,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .wordmark{color:var(--encre);text-decoration:none;display:inline-flex;align-items:baseline;gap:.2em;font-size:26px;line-height:1;padding:.2em 0}
 .wordmark .the{font-family:"Instrument Serif",Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;font-size:1.1em;letter-spacing:0}
 .wordmark .sell{font-weight:300;letter-spacing:-.01em}
-.wordmark .sig{width:1.45em;height:.96em;align-self:center;margin-right:.12em;overflow:visible;flex:none}
+.wordmark .sig{width:1.05em;height:1.05em;align-self:center;margin-right:.1em;overflow:visible;flex:none}
 .wordmark .i{position:relative;display:inline-block}
 .wordmark .i::after{content:"";position:absolute;left:50%;top:.07em;width:.17em;height:.17em;border-radius:50%;background:var(--dot);transform:translateX(-50%)}
 .tabs{display:flex;gap:2px;background:var(--soft);border-radius:999px;padding:3px}
@@ -97,26 +103,6 @@ summary{cursor:pointer;font-weight:500;color:var(--muted);font-size:15px}
 
 /* listings */
 .listings{display:grid;gap:12px}
-.xpost{display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:12px}
-.xpost p{margin:0;color:var(--muted);font-size:14px;max-width:56ch}
-.xpost p:empty{display:none}
-.xsteps{margin:0;padding-left:1.3em;display:grid;gap:4px}
-.xbig{width:100%;padding:14px 20px;font-size:16px;justify-content:center}
-.install{border:1px solid var(--vert);border-radius:16px;padding:0 16px;background:var(--surface);margin:0 0 20px}
-.install>summary{cursor:pointer;padding:14px 0}
-.install>summary small{color:var(--muted)}
-.install p{margin:0 0 8px;color:var(--muted)}
-.install ol{margin:0 0 16px;padding-left:1.3em;display:grid;gap:8px}
-.install code{font-size:14px;background:var(--soft);padding:1px 6px;border-radius:6px}
-.xedit{border:1px solid var(--line);border-radius:16px;padding:0 16px;background:var(--soft)}
-.xedit>summary{cursor:pointer;padding:14px 0;font-weight:600}
-.xedit>summary small{font-weight:400;color:var(--muted)}
-.xedit[open]{padding-bottom:16px}
-body.simple .tabs,body.simple #save{display:none!important}
-.xpost code{font-size:13px}
-.xpost .xhost{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:14px;font-weight:500;white-space:nowrap;width:auto}
-.xpost .xhost select{width:auto}
-.xpost select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--encre)}
 .listing{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
 .listing-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .listing-h h3{font-size:1.15rem}
@@ -166,6 +152,81 @@ body.simple .tabs,body.simple #save{display:none!important}
 .empty h2{font-size:1.6rem;margin-bottom:8px}
 .empty p{color:var(--muted);margin:0 0 18px}
 .hidden{display:none!important}
+/* compact listings */
+.listing.compact{padding:12px 14px}
+.lc-h{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline}
+.lc-h h3{font-size:1.02rem;margin:0}
+.lc-t{color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lc-h .price{font-weight:700}
+.lc-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.lc-a .check{margin-left:auto}
+.lc-body{margin-top:6px;border-top:1px solid var(--line);padding-top:4px}
+.ext-note{font-size:13px;color:var(--muted);margin:10px 2px 0}
+/* stock toolbar */
+.stock-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.stock-bar select{width:auto;padding:7px 10px;font-size:14px;background:var(--surface)}
+.stock-bar select.on{border-color:var(--encre);font-weight:500}
+.stock-bar .cnt{font-size:14px;color:var(--muted);margin-left:auto}
+.sel-bar{position:sticky;top:calc(64px + env(safe-area-inset-top,0px));z-index:4;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--encre);color:var(--lin);border-radius:14px;padding:10px 12px;margin-bottom:12px}
+.sel-bar select{width:auto;padding:6px 10px;font-size:14px}
+.sel-bar .btn{border-color:transparent}
+.sel-bar .linkb{background:none;border:0;color:var(--lin);text-decoration:underline;font:500 14px "DM Sans",sans-serif;cursor:pointer}
+.selbox{width:18px;height:18px;margin:0 8px 0 0;accent-color:var(--vert);vertical-align:-2px}
+/* bulk */
+.modebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-8px 0 8px}
+.modebar small{color:var(--muted);font-size:13px}
+.bulk-list{display:grid;gap:12px;margin-top:14px}
+.bcard{display:grid;grid-template-columns:112px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+@media (max-width:480px){.bcard{grid-template-columns:84px 1fr;gap:12px}}
+.bthumbs{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-content:start}
+.bthumbs img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;display:block;background:var(--soft)}
+.bthumbs img:first-child{grid-column:1/-1}
+.bthumbs .more{display:grid;place-items:center;aspect-ratio:3/4;border-radius:8px;background:var(--soft);font-size:12px;color:var(--muted)}
+.bthumbs .addph{grid-column:1/-1;border:1px dashed var(--galet);background:none;border-radius:8px;padding:5px;font:500 12px "DM Sans",sans-serif;color:var(--muted);cursor:pointer}
+.bhead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.bhead h3{font-size:1.05rem}
+.bmeta{color:var(--muted);font-size:14px;margin:3px 0 0}
+.bprice{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.bprice input{width:96px;padding:7px 10px;font-weight:700}
+.bprice input.miss{border-color:var(--warn)}
+.bprice small{color:var(--muted);font-size:13px}
+.bsites{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.bsite{border:1px solid var(--line);background:var(--lin);border-radius:999px;padding:5px 11px;font:500 13px "DM Sans",sans-serif;color:var(--muted);cursor:pointer}
+.bsite[aria-pressed="true"]{border-color:var(--encre);color:var(--encre);background:var(--surface)}
+.bsite:disabled{opacity:.45;cursor:not-allowed}
+.bacts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+details.bprev{margin-top:10px}
+details.bprev summary{font-size:14px;font-weight:500}
+.bprev .bl{border-top:1px solid var(--line);padding:10px 0}
+.bprev .bl:first-of-type{border-top:0}
+.bprev .bl .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bprev .bl p{margin:4px 0 0;font-size:14px;white-space:pre-line;color:var(--muted);max-height:7.5em;overflow:hidden}
+.bulk-bar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:16px;box-shadow:0 10px 30px rgba(20,20,20,.1)}
+.bulk-bar .actions{margin-top:0}
+/* transactions */
+.txline{display:flex;gap:4px;list-style:none;padding:0;margin:10px 0 2px;flex-wrap:wrap}
+.txline li{font-size:12px;font-weight:500;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.txline li.done{border-color:var(--encre);color:var(--encre)}
+.txline li.cur{background:var(--encre);border-color:var(--encre);color:var(--lin)}
+.txline li.fail{border-color:var(--warn);color:var(--warn)}
+.txsrc{font-size:12px;color:var(--muted);margin:2px 0 0}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;border:1px solid var(--encre);color:var(--encre);white-space:nowrap}
+.chip.fin{background:var(--encre);color:var(--lin)}
+.chip.fail{border-color:var(--warn);color:var(--warn)}
+.chip.mute{border-color:var(--line);color:var(--muted);font-weight:500}
+.relist{display:grid;gap:8px;margin-top:10px}
+.relist .rl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.relist .rl span{min-width:9em;font-weight:500}
+details.sim{margin-top:10px;font-size:14px}
+details.sim summary{font-size:13px}
+details.sim .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+details.sim select{width:auto;padding:6px 10px;font-size:14px}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.feed li:first-child{border-top:0}
+.feed .meta{grid-column:1;font-size:13px;color:var(--muted)}
+.feed .pr{grid-row:1/3;grid-column:2;text-align:right;align-self:center}
+.feed .pr b{display:block;font-size:15px}
 .plat-opt .why.warn{color:var(--encre);font-weight:500}
 .plat-opt.noacc{cursor:default;opacity:1;background:var(--lin);border-style:dashed}
 .plat-opt.noacc .t,.plat-opt.noacc input[type=checkbox]{opacity:.5}
@@ -177,7 +238,6 @@ body.simple .tabs,body.simple #save{display:none!important}
 .acc-site:first-of-type{border-top:0}
 .acc-site strong{display:block;margin-bottom:8px}
 .plat-opt.off:not(.noacc) .t::after{content:" · non accepté";font-weight:400;color:var(--muted)}
-.plat-opt.off.soon .t::after{content:" · bientôt"}
 .modal{position:fixed;inset:0;z-index:50;background:rgba(20,20,20,.45);display:grid;place-items:center;padding:20px}
 .modal-card{background:var(--surface);border-radius:20px;max-width:420px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .modal-card h3{font-size:1.25rem;margin-bottom:8px}
@@ -392,7 +452,7 @@ body:not(.public) .pubnav{display:none}
 <body>
 <header class="bar">
   <div class="bar-in">
-    <a class="wordmark" href="#publier" aria-label="The Sellist"><svg class="sig" viewBox="-10 -50 920 610" aria-hidden="true"><path d="M875 318 L550 322 C400 330 90 390 70 420 C60 445 160 445 280 446 L830 462 C660 465 460 480 5 545" fill="none" stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><path d="M460 5 C465 170 485 370 505 480 C512 515 520 510 508 470 C500 445 495 435 490 438 C440 370 360 310 190 288 C160 284 165 300 205 297" fill="none" stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><circle cx="461" cy="-20" r="52" style="fill:var(--dot)"/></svg><span class="the">The</span><span class="sell">Sell<span class="i">ı</span>st</span></a>
+    <a class="wordmark" href="#publier" aria-label="The Sellist"><svg class="sig" viewBox="0 0 100 100" aria-hidden="true"><text x="50" y="78" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="400" font-size="76" fill="currentColor">S</text><text x="44" y="70" text-anchor="middle" font-family="Instrument Serif, serif" font-style="italic" font-size="72" style="fill:var(--dot)">T</text><circle cx="74" cy="80" r="5.5" style="fill:var(--dot)"/></svg><span class="the">The</span><span class="sell">Sell<span class="i">ı</span>st</span></a>
     <nav class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-view="publier">Publier</button>
       <button role="tab" aria-selected="false" data-view="stock">Mes articles<span id="stockCount"></span></button>
@@ -510,27 +570,17 @@ body:not(.public) .pubnav{display:none}
   <div id="view-publier">
     <div class="hero">
       <h1>Poste une fois. Vends <em class="serif">partout.</em></h1>
-      <p>Ajoute tes photos, on remplit la fiche, on te dit où vendre et on rédige les annonces.</p>
+      <p>Ajoute tes photos, d’un ou de plusieurs articles : on les reconnaît, on remplit les fiches et on rédige les annonces.</p>
     </div>
-    <details class="install hidden" id="install">
-      <summary><strong>Avant de commencer : installe l’extension</strong> <small>(2 minutes, une seule fois)</small></summary>
-      <p>Elle remplit tes annonces Vinted et Vestiaire à ta place. Elle marche sur Chrome, sur ordinateur.</p>
-      <ol>
-        <li><a class="btn go sm" href="the-sellist-extension.zip" download>Télécharger l’extension</a> puis double-clique sur le fichier pour le décompresser.</li>
-        <li>Dans Chrome, tape <code>chrome://extensions</code> dans la barre d’adresse.</li>
-        <li>En haut à droite, active le <strong>Mode développeur</strong> <small>(Developer mode)</small>.</li>
-        <li>Clique sur <strong>Charger l’extension non empaquetée</strong> <small>(Load unpacked)</small> et choisis le dossier <code>extension</code>.</li>
-        <li>Reviens ici et recharge la page : ce message disparaît.</li>
-      </ol>
-    </details>
 
+    <div id="singleMode">
     <section class="step">
       <div class="step-h"><span class="n">1</span><h2>Tes photos</h2></div>
       <div class="card">
         <input id="fileIn" type="file" accept="image/*" multiple class="hidden">
         <div class="drop" id="drop" role="button" tabindex="0">
           <strong>Ajoute tes photos</strong>
-          <p>Depuis ta galerie ou ton appareil photo. La première sera la photo de couverture.</p>
+          <p>Un article ou tout ton dressing : on reconnaît les photos qui vont ensemble et on crée une fiche par article.</p>
           <span class="btn go">Choisir des photos</span>
         </div>
         <div class="thumbs hidden" id="thumbs"></div>
@@ -608,22 +658,39 @@ body:not(.public) .pubnav{display:none}
     </section>
 
     <section class="step hidden" id="step3">
-      <div class="step-h"><span class="n">4</span><h2>Publie</h2></div>
-      <div class="xpost hidden" id="xpost">
-        <ol class="xsteps">
-          <li>Clique sur le bouton : un onglet s’ouvre par site.</li>
-          <li>On remplit l’annonce pour toi, photos comprises.</li>
-          <li>Sur chaque onglet, vérifie et clique sur <strong>Publier</strong>.</li>
-        </ol>
-        <p id="xpostMsg"></p>
-        <label class="xhost" id="xhostWrap">Mon compte Vinted : <select id="xhost"><option value="www.vinted.fr">vinted.fr</option><option value="www.vinted.co.uk">vinted.co.uk</option></select></label>
-        <button class="btn go xbig" id="xpostBtn" type="button">Remplir Vinted + Vestiaire</button>
-      </div>
-      <details class="xedit" id="xedit"><summary>Relire ou modifier les textes <small>(facultatif)</small></summary>
+      <div class="step-h"><span class="n">4</span><h2>Tes annonces</h2></div>
+      <div class="alert hidden" id="staleBar" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>Tu as modifié la fiche ou les sites : actualise les annonces.</span><button class="btn go sm" type="button" id="regen">Actualiser les annonces</button></div>
       <div class="listings" id="listings"></div>
-      </details>
+      <p class="ext-note">« Publier sur… » copie l’annonce pour l’extension The Sellist et ouvre le site : colle-la dans le panneau, puis copie chaque champ dans le formulaire.</p>
       <div class="actions"><button class="btn go" id="save" type="button">Ajouter à mes articles</button></div>
     </section>
+    </div>
+
+    <div id="bulkMode" class="hidden">
+      <section class="step">
+        <div class="step-h"><span class="n">1</span><h2>Tes articles</h2></div>
+        <div class="card">
+          <p class="bmeta" id="bulkHint" style="margin:0 0 12px"></p>
+          <input id="bulkFile" type="file" accept="image/*" multiple class="hidden">
+          <input id="bulkAddFile" type="file" accept="image/*" multiple class="hidden">
+          <div class="drop" id="bulkDrop" role="button" tabindex="0">
+            <strong>Ajoute d’autres articles</strong>
+            <p>On regroupe à nouveau les photos par article.</p>
+            <span class="btn">Choisir des photos</span>
+          </div>
+          <div class="status" id="bulkStatus" aria-live="polite"></div>
+        </div>
+        <div class="bulk-list" id="bulkList"></div>
+        <div class="bulk-bar hidden" id="bulkBar">
+          <div class="actions">
+            <button class="btn go" id="bulkGen" type="button">Rédiger les annonces</button>
+            <button class="btn go hidden" id="bulkSave" type="button">Ajouter à mes articles</button>
+            <button class="btn" id="bulkMore" type="button">Ajouter des articles</button>
+            <button class="btn" id="bulkClear" type="button">Tout vider</button>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 
   <div id="view-stock" class="hidden"><div id="stockList"></div></div>
@@ -692,6 +759,7 @@ body:not(.public) .pubnav{display:none}
         <p class="intro">Tes articles t’appartiennent. Emporte-les quand tu veux.</p>
         <div class="actions" style="margin-top:0">
           <button class="btn" id="exportCsv" type="button">Exporter mes articles (CSV)</button>
+          <button class="btn" id="exportExt" type="button">Exporter pour l’extension</button>
           <button class="btn danger" id="wipe" type="button">Supprimer tous mes articles</button>
           <button class="btn" id="logout" type="button">Se déconnecter</button>
         </div>
@@ -715,6 +783,7 @@ body:not(.public) .pubnav{display:none}
     <div class="sfilters" id="sfilters" aria-label="Filtres"></div>
     <p class="ftag hidden" id="ftag"></p>
     <div class="kpis" id="kpisFree"></div>
+    <div class="card box" style="margin-top:12px"><h3>Suivi des ventes</h3><p class="s" style="color:var(--muted);margin:-6px 0 8px;font-size:14px">Statuts transmis par les sites ou déclarés par toi. Rien à faire ici.</p><div id="txFeed"></div></div>
     <div class="pro-head"><h2>Pour aller plus loin</h2><span class="tagpro">Pro</span></div>
     <div class="pro-wrap" id="proWrap">
       <div class="pro-grid" id="proGrid"></div>
@@ -851,10 +920,10 @@ function renderPhotos(){
 }
 $("#drop").addEventListener("click",()=>$("#fileIn").click());
 $("#drop").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#fileIn").click()}});
-$("#fileIn").addEventListener("change",e=>{addFiles(e.target.files);e.target.value=""});
+$("#fileIn").addEventListener("change",e=>{const f=e.target.files;photos.length?addFiles(f):intake(f,false);e.target.value=""});
 ["dragover","dragenter"].forEach(t=>$("#drop").addEventListener(t,e=>{e.preventDefault();$("#drop").classList.add("over")}));
 ["dragleave","drop"].forEach(t=>$("#drop").addEventListener(t,e=>{e.preventDefault();$("#drop").classList.remove("over")}));
-$("#drop").addEventListener("drop",e=>addFiles(e.dataTransfer.files));
+$("#drop").addEventListener("drop",e=>{const f=e.dataTransfer.files;photos.length?addFiles(f):intake(f,false)});
 $("#thumbs").addEventListener("click",e=>{
   if(e.target.closest("#addMore")){$("#fileIn").click();return}
   const b=e.target.closest("button");if(!b)return;
@@ -865,16 +934,20 @@ $("#thumbs").addEventListener("click",e=>{
 });
 async function blobOf(ph){if(ph.blob)return ph.blob;const r=await fetch(ph.url);ph.blob=await r.blob();return ph.blob}
 
+async function aiFiche(imgs){
+  const n=imgs.length;
+  const prompt=`Voici ${n} photo(s) d’un article de seconde main que quelqu’un veut revendre. Remplis une fiche en français à partir de ce que tu VOIS. N’invente rien : si une information n’est pas visible ou lisible (par exemple la taille ou la matière sur l’étiquette), laisse une chaîne vide.
+Réponds UNIQUEMENT avec un objet JSON, sans texte autour, de la forme :
+{"titre":"type d’article en quelques mots, sans la marque","marque":"","categorie":"ex. Vestes femme","taille":"","couleur":"","matiere":"","etat":"une valeur parmi : Neuf avec étiquette, Neuf sans étiquette, Très bon état, Bon état, Satisfaisant (ou vide si impossible à juger)","notes":"défauts ou détails visibles, en une ou deux phrases, ou vide"}`;
+  return await sample.json(prompt,{images:imgs,modelTier:"default"});
+}
 $("#fill").addEventListener("click",async()=>{
   if(!sample||!imgCaps||!photos.length)return;
   const btn=$("#fill");btn.disabled=true;photoStatus("On regarde tes photos…");
   try{
     const n=Math.min(imgCaps.maxCount||4,4,photos.length);
     const imgs=[];for(const ph of photos.slice(0,n))imgs.push(await blobOf(ph));
-    const prompt=`Voici ${n} photo(s) d’un article de seconde main que quelqu’un veut revendre. Remplis une fiche en français à partir de ce que tu VOIS. N’invente rien : si une information n’est pas visible ou lisible (par exemple la taille ou la matière sur l’étiquette), laisse une chaîne vide.
-Réponds UNIQUEMENT avec un objet JSON, sans texte autour, de la forme :
-{"titre":"type d’article en quelques mots, sans la marque","marque":"","categorie":"ex. Vestes femme","taille":"","couleur":"","matiere":"","etat":"une valeur parmi : Neuf avec étiquette, Neuf sans étiquette, Très bon état, Bon état, Satisfaisant (ou vide si impossible à juger)","notes":"défauts ou détails visibles, en une ou deux phrases, ou vide"}`;
-    const out=await sample.json(prompt,{images:imgs,modelTier:"default"});
+    const out=await aiFiche(imgs);
     let filled=0;
     for(const f of ["titre","marque","categorie","taille","couleur","matiere","notes"]){
       const v=typeof out?.[f]==="string"?out[f].trim():"";
@@ -927,13 +1000,9 @@ function shipCheck(){
   const tooHeavy=!isNaN(w)&&w>SHIP_MAX.kg,tooBig=sum!=null&&sum>SHIP_MAX.cm;
   return {known:!isNaN(w)||sum!=null,tooHeavy,tooBig,over:tooHeavy||tooBig};
 }
-/* Prototype : seuls les sites gérés par l’extension sont proposés, et Vestiaire accepte tout
-   (les règles fast fashion / objets sont conservées ; repasse PROTOTYPE_SITES à null pour les réactiver). */
-const PROTOTYPE_SITES=["vinted","vestiaire"];
 function catRule(id){
   const d=readForm(),obj=tier==="objets";
-  if(PROTOTYPE_SITES&&!PROTOTYPE_SITES.includes(id))return {state:"blocked",soon:true,why:`${P[id].name} arrive bientôt dans The Sellist.`};
-  if(id==="vestiaire"&&!PROTOTYPE_SITES){
+  if(id==="vestiaire"){
     if(obj)return {state:"blocked",why:"Vestiaire Collective n’accepte que la mode et les accessoires."};
     if(isFast)return {state:"blocked",why:"Vestiaire Collective n’accepte pas les marques de fast fashion."};
   }
@@ -950,10 +1019,7 @@ function catRule(id){
   }
   return {state:"ok"};
 }
-/* Pseudos désactivés pour le prototype : plus de popup « Crée ton compte », et un site
-   se coche sans pseudo. Le code est conservé ; repasse PSEUDO_REQUIRED à true pour le réactiver. */
-const PSEUDO_REQUIRED=false;
-const hasAccount=id=>!PSEUDO_REQUIRED||!!(settings&&settings.pseudos&&(settings.pseudos[id]||"").trim());
+const hasAccount=id=>!!(settings&&settings.pseudos&&(settings.pseudos[id]||"").trim());
 const isReco=id=>!!(tier&&ROUTES[tier].on.includes(id)&&!(id==="vinted"&&isBig())&&catRule(id).state!=="blocked");
 function rule(id){
   const c=catRule(id);
@@ -987,7 +1053,7 @@ let accPopupTimer=null;
 function scheduleAccountPopup(){
   clearTimeout(accPopupTimer);
   accPopupTimer=setTimeout(()=>{
-    if(!session||settings.popupCompteVu||$("#view-publier").classList.contains("hidden")||document.querySelector(".modal"))return;
+    if(bulkRunning||!session||settings.popupCompteVu||$("#view-publier").classList.contains("hidden")||document.querySelector(".modal"))return;
     const missing=PLATFORMS.map(p=>p.id).filter(id=>isReco(id)&&!hasAccount(id));
     if(missing.length)openAccountPopup(missing);
   },900);
@@ -1038,7 +1104,7 @@ function renderRouting(){
       <span class="acc-inline"><input data-pseudo-inline="${p.id}" placeholder="Ton pseudo" aria-label="Pseudo ${p.name}" autocomplete="off"><button class="btn sm" type="button" data-save-pseudo="${p.id}">Ajouter</button><a class="btn sm" href="${SHOP_URLS[p.id]}" target="_blank" rel="noopener">Créer un compte</a></span></span></div>`;
     const why=r.why||((p.id==="vinted"&&isBig())?"Difficile à expédier : Leboncoin en main propre est plus simple.":route?route.why[p.id]:"");
     const checked=selection.has(p.id)&&!blocked;
-    return `<label class="plat-opt ${blocked?"off":""} ${r.soon?"soon":""}"${blocked?`title="${esc(r.why)}"`:""}><input type="checkbox" data-plat="${p.id}" ${checked?"checked":""} ${blocked?"disabled aria-disabled=\"true\"":""}>
+    return `<label class="plat-opt ${blocked?"off":""}" ${blocked?`title="${esc(r.why)}"`:""}><input type="checkbox" data-plat="${p.id}" ${checked?"checked":""} ${blocked?"disabled aria-disabled=\"true\"":""}>
       <span><span class="t">${p.name}</span>${why?`<span class="why ${r.state==="warn"?"warn":""}">${why}</span>`:""}</span></label>`}).join("");
   renderAdvice();
   const obj=tier==="objets";
@@ -1257,6 +1323,7 @@ $("#gen").addEventListener("click",async()=>{
     catch(e){texts=templateListing(d,ids,valeur,justifs);fallbackMsg=" Rédaction à partir de modèles : relis-les bien."}
   }else texts=templateListing(d,ids,valeur,justifs);
   const keep=current&&current.id?{id:current.id,created:current.created}:{id:null,created:Date.now()};
+  keep.ref=(current&&(current.ref||current.id))||("r"+uid()+Date.now().toString(36));
   current={...keep,fiche:d,tier,valeur,plancher:isNaN(plancher)?null:plancher,justifs,status:"en vente",soldOn:null,
     listings:Object.fromEntries(ids.map(id=>{
       const prix=priceFor(id,d.prix,valeur,plancher);
@@ -1266,95 +1333,66 @@ $("#gen").addEventListener("click",async()=>{
       return [id,{titre:texts[id].titre,description:texts[id].description,prix,publie:was,fields:specFields(id,d,tier==="objets",cat,colis,prix)}]}))};
   if(removed.length){const names=removed.map(id=>P[id].name).join(" et ");toast(`Retiré de ${names}. Pense à supprimer l’annonce sur le site.`)}
   const n=ids.length;
-  setStatus((valeur?`Tes ${n} annonces sont prêtes. Relis-les avec soin, c’est une belle pièce.`:`C’est prêt pour ${n} site${n>1?"s":""}. Plus qu’à publier, juste en dessous.`)+fallbackMsg);
-  renderListings();btn.disabled=false;
+  setStatus((valeur?`Tes ${n} annonces sont prêtes. Relis-les avec soin, c’est une belle pièce.`:`C’est prêt pour ${n} site${n>1?"s":""}. Copie, colle, publie : on garde le fil du reste.`)+fallbackMsg);
+  renderListings();btn.disabled=false;$("#staleBar").classList.add("hidden");
   $("#step3").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 });
 
+const openListings=new Set();
 function renderListings(){
   if(!current){$("#step3").classList.add("hidden");return}
   $("#step3").classList.remove("hidden");
   $("#listings").innerHTML=Object.keys(current.listings).map(id=>{
-    const p=P[id],l=current.listings[id];const over=p.titleMax&&l.titre.length>p.titleMax;
-    return `<article class="listing" data-p="${id}">
-      <div class="listing-h"><h3>${p.name}</h3><span class="price">${l.prix!==""?l.prix+" €":""}</span></div>
-      <div class="field"><div class="row"><span class="${over?"over":""}" data-count>${p.titleMax?`Titre · ${l.titre.length}/${p.titleMax}`:"Titre"}</span><button class="btn sm" data-copy="titre">Copier</button></div>
-        <input data-edit="titre" value="${esc(l.titre)}"></div>
-      ${(l.fields||[]).length?`<div class="field"><div class="row"><span>Champs du formulaire</span></div><div class="specs">${l.fields.map((fd,j)=>`<div class="spec"><span class="lab">${esc(fd.label)}</span><input data-field="${j}" value="${esc(fd.value)}" placeholder="À compléter" aria-label="${esc(fd.label)}"><button class="btn sm" data-copyfield="${j}">Copier</button></div>`).join("")}</div></div>`:""}
-      <div class="field"><div class="row"><span>Description</span><button class="btn sm" data-copy="description">Copier</button></div>
-        <textarea data-edit="description" rows="6">${esc(l.description)}</textarea></div>
-      <div class="listing-f">
-        <a class="btn" href="${p.url}" target="_blank" rel="noopener">Ouvrir ${p.name}</a>
+    const p=P[id],l=current.listings[id];const over=p.titleMax&&l.titre.length>p.titleMax;const open=openListings.has(id);
+    return `<article class="listing compact" data-p="${id}">
+      <div class="lc-h"><h3>${p.name}</h3><span class="lc-t">${esc(l.titre)}</span><span class="price">${l.prix!==""?l.prix+" €":""}</span></div>
+      <div class="lc-a">
+        <button class="btn go sm" type="button" data-publish="${id}">Publier sur ${p.name}</button>
+        <button class="btn sm" type="button" data-ldetail aria-expanded="${open}">${open?"Masquer":"Détailler"}</button>
         <label class="check"><input type="checkbox" data-pub ${l.publie?"checked":""}> En ligne</label>
+      </div>
+      <div class="lc-body ${open?"":"hidden"}">
+        <div class="field"><div class="row"><span class="${over?"over":""}" data-count>${p.titleMax?`Titre · ${l.titre.length}/${p.titleMax}`:"Titre"}</span></div>
+          <input data-edit="titre" value="${esc(l.titre)}"></div>
+        ${(l.fields||[]).length?`<div class="field"><div class="row"><span>Champs du formulaire</span></div><div class="specs">${l.fields.map((fd,j)=>`<div class="spec" style="grid-template-columns:minmax(96px,32%) 1fr"><span class="lab">${esc(fd.label)}</span><input data-field="${j}" value="${esc(fd.value)}" placeholder="À compléter" aria-label="${esc(fd.label)}"></div>`).join("")}</div></div>`:""}
+        <div class="field"><div class="row"><span>Description</span></div>
+          <textarea data-edit="description" rows="6">${esc(l.description)}</textarea></div>
       </div></article>`}).join("");
   $("#save").textContent=current.id?"Mettre à jour dans mes articles":"Ajouter à mes articles";
-  renderXpost();
 }
-
-/* ================= extension : remplir Vinted + Vestiaire ================= */
-const XPOST_SITES=["vinted","vestiaire"];
-const hasExt=()=>!!document.documentElement.dataset.sellistExt;
-function xpostIds(){return current?XPOST_SITES.filter(id=>current.listings[id]):[]}
-function renderXpost(){
-  const box=$("#xpost"),ids=xpostIds();
-  box.classList.toggle("hidden",!ids.length);if(!ids.length)return;
-  const names=ids.map(id=>P[id].name).join(" + ");
-  $("#xpostBtn").textContent=`Publier sur ${names.replace("Vestiaire Collective","Vestiaire")}`;$("#xpostBtn").disabled=!hasExt();
-  $("#xhostWrap").classList.toggle("hidden",!ids.includes("vinted")||!hasExt());
-  document.querySelector(".xsteps").classList.toggle("hidden",!hasExt());
-  $("#xpostMsg").innerHTML=hasExt()
-    ?`Connecte-toi d’abord à ${ids.length>1?"chaque site":P[ids[0]].name} dans ce navigateur.`
-    :`Pour publier en un clic, <a href="#" data-show-install>installe l’extension The Sellist</a>. En attendant, ouvre les textes ci-dessous et copie-colle-les.`;
-  // without the extension, copy-paste is the only way: show the texts straight away
-  if(!hasExt())$("#xedit").open=true;
+function articleForExt(it){
+  const f=it.fiche||{};
+  return {id:String(it.ref||it.id||"tmp"),nom:[f.marque,f.titre].filter(Boolean).join(" ")||"Article",
+    listings:Object.fromEntries(Object.entries(it.listings||{}).filter(([id])=>P[id]).map(([id,l])=>[id,{titre:l.titre||"",description:l.description||"",prix:l.prix??"",publie:!!l.publie,
+      champs:(l.fields||[]).filter(fd=>fd.value).map(fd=>({label:fd.label,valeur:fd.value}))}]))};
 }
-/* Prototype simplifié : on cache Mes articles, Statistiques et « Ajouter à mes articles ».
-   Le code est conservé ; repasse SIMPLE_MODE à false pour les réafficher. */
-const SIMPLE_MODE=true;
-document.body.classList.toggle("simple",SIMPLE_MODE);
-// Install guide at the top of Publier: shown (open) only while the extension isn't detected.
-function renderInstall(){const el=$("#install");el.classList.toggle("hidden",hasExt());if(!hasExt()&&!renderInstall.done){el.open=true;renderInstall.done=true}}
-setTimeout(renderInstall,600); // give the extension's bridge time to announce itself
-document.addEventListener("click",e=>{if(!e.target.closest("[data-show-install]"))return;e.preventDefault();const el=$("#install");el.classList.remove("hidden");el.open=true;el.scrollIntoView({behavior:"smooth"})});
-window.addEventListener("message",e=>{
-  if(e.source!==window||!e.data||e.data.source!=="sellist-ext")return;
-  if(e.data.type==="READY"){renderXpost();renderInstall()}
-  if(e.data.type==="PUBLISH_RESULT"){
-    $("#xpostBtn").disabled=false;
-    if(e.data.ok)toast("Onglets ouverts. Vérifie chaque annonce, publie, puis coche « En ligne ».");
-    else toast(e.data.error||"L’extension n’a pas répondu. Recharge la page et réessaie.");
-  }
-});
-function blobToDataUrl(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b)})}
-$("#xpostBtn").addEventListener("click",async()=>{
-  const ids=xpostIds();if(!ids.length||!hasExt())return;
-  const btn=$("#xpostBtn");btn.disabled=true;
-  try{
-    const imgs=[];for(const ph of photos.slice(0,20))imgs.push(await blobToDataUrl(await blobOf(ph)));
-    const job={fiche:current.fiche,photos:imgs,vintedHost:$("#xhost").value,listings:Object.fromEntries(ids.map(id=>[id,current.listings[id]]))};
-    window.postMessage({source:"sellist-page",type:"PUBLISH",id:uid(),job},"*");
-  }catch(e){btn.disabled=false;toast("Impossible de préparer les photos. Réessaie.")}
-});
-try{const h=localStorage.getItem("ts-vinted-host");if(h)$("#xhost").value=h}catch(e){}
-$("#xhost").addEventListener("change",()=>{try{localStorage.setItem("ts-vinted-host",$("#xhost").value)}catch(e){}});
-window.postMessage({source:"sellist-page",type:"PING"},"*");
 $("#listings").addEventListener("input",e=>{
   const c=e.target.closest(".listing");if(!c)return;
   if(e.target.dataset.field!=null){
     const l=current.listings[c.dataset.p],fd=l.fields[+e.target.dataset.field];fd.value=e.target.value;
-    if(fd.label==="Prix"){const n=parseFloat(e.target.value.replace(",","."));l.prix=isNaN(n)?"":Math.round(n);c.querySelector(".price").textContent=l.prix!==""?l.prix+" €":""}
+    if(fd.label==="Prix"){const n=parseFloat(e.target.value.replace(",","."));l.prix=isNaN(n)?"":Math.round(n);c.querySelector(".lc-h .price").textContent=l.prix!==""?l.prix+" €":""}
     return;
   }
   if(!e.target.dataset.edit)return;
   const p=P[c.dataset.p];current.listings[p.id][e.target.dataset.edit]=e.target.value;
+  if(e.target.dataset.edit==="titre")c.querySelector(".lc-t").textContent=e.target.value;
   if(e.target.dataset.edit==="titre"&&p.titleMax){const s=c.querySelector("[data-count]");s.textContent=`Titre · ${e.target.value.length}/${p.titleMax}`;s.classList.toggle("over",e.target.value.length>p.titleMax)}
 });
 $("#listings").addEventListener("click",e=>{
+  const pb=e.target.closest("[data-publish]");
+  if(pb){const id=pb.dataset.publish;
+    const payload=JSON.stringify({app:"The Sellist",type:"article",site:id,article:articleForExt(current)});
+    const w=window.open(P[id].url,"_blank","noopener");
+    navigator.clipboard.writeText(payload).then(()=>toast(`Annonce copiée pour l’extension. Sur ${P[id].name}, ouvre The Sellist et colle-la.`)).catch(()=>toast("Copie impossible : exporte depuis Mon compte."));
+    return}
+  const dt=e.target.closest("[data-ldetail]");
+  if(dt){const id=dt.closest(".listing").dataset.p;openListings.has(id)?openListings.delete(id):openListings.add(id);renderListings();return}
   const f=e.target.closest("[data-copyfield]");
   if(f){const fd=current.listings[f.closest(".listing").dataset.p].fields[+f.dataset.copyfield];if(fd.value)copy(fd.value);else toast("Ce champ est vide.");return}
   const b=e.target.closest("[data-copy]");if(!b)return;copy(current.listings[b.closest(".listing").dataset.p][b.dataset.copy])});
 $("#listings").addEventListener("change",e=>{if(!e.target.matches("[data-pub]"))return;current.listings[e.target.closest(".listing").dataset.p].publie=e.target.checked;if(current.id)saveItem(current,true)});
 $("#save").addEventListener("click",async()=>{
+  setTimeout(()=>{if(bulk.length&&current&&current.id){resetForm();setPubMode("bulk");bulkStatus("Article ajouté. Voici les autres.")}},1200);
   const isNew=!current.id,btn=$("#save");btn.disabled=true;
   try{
     if(photos.length&&assets)setStatus("On enregistre tes photos…");
@@ -1365,6 +1403,215 @@ $("#save").addEventListener("click",async()=>{
   btn.disabled=false;
 });
 $("#reset").addEventListener("click",resetForm);
+const markStale=()=>{if(current&&!$("#step3").classList.contains("hidden"))$("#staleBar").classList.remove("hidden")};
+$("#form").addEventListener("input",markStale);$("#form").addEventListener("change",markStale);
+$("#plats").addEventListener("change",markStale);$("#tierSel").addEventListener("change",markStale);
+$("#regen").addEventListener("click",()=>$("#gen").click());
+/* ================= publication groupée ================= */
+let bulk=[],bulkRunning=false,bulkAddTarget=null,pubMode="single";
+const BULK_FREE=3;
+const isPro=()=>settings&&settings.plan==="pro";
+const BSTATE={idle:["mute","À rédiger"],read:["","Lecture des photos…"],write:["","Rédaction…"],ready:["fin","Prêt"],error:["fail","À reprendre"]};
+function setPubMode(m){
+  pubMode=m;
+  document.querySelectorAll("[data-pubmode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pubmode===m)));
+  $("#singleMode").classList.toggle("hidden",m!=="single");$("#bulkMode").classList.toggle("hidden",m!=="bulk");
+  $("#bulkHint").textContent=isPro()?"Vérifie les regroupements, puis lance la rédaction.":`Vérifie les regroupements, puis lance la rédaction. En gratuit, ${BULK_FREE} articles à la fois ; illimité avec Pro.`;
+  renderBulk();
+}
+document.querySelectorAll("[data-pubmode]").forEach(b=>b.addEventListener("click",()=>setPubMode(b.dataset.pubmode)));
+function bulkStatus(m,err){const e=$("#bulkStatus");e.textContent=m||"";e.classList.toggle("err",!!err)}
+async function bulkAdd(files,targetKey){
+  const list=[...files].filter(f=>f.type.startsWith("image/"));if(!list.length)return;
+  bulkStatus("On prépare tes photos…");
+  if(targetKey){const c=bulk.find(x=>x.key===targetKey);if(c){for(const f of list){const b=await compress(f);c.photos.push({key:uid(),blob:b,url:URL.createObjectURL(b)})}if(c.state==="ready")c.state="idle"}}
+  else{
+    let room=isPro()?Infinity:BULK_FREE-bulk.length,skipped=0;
+    for(const f of list){if(room<=0){skipped++;continue}const b=await compress(f);bulk.push({key:uid(),photos:[{key:uid(),blob:b,url:URL.createObjectURL(b)}],state:"idle",prix:"",sel:[]});room--}
+    bulkStatus(skipped?`En gratuit, ${BULK_FREE} articles à la fois : ${skipped} photo${skipped>1?"s":""} non ajoutée${skipped>1?"s":""}. Passe à Pro pour tout publier d’un coup.`:"",!!skipped);
+    if(!skipped)bulkStatus("");
+  }
+  renderBulk();
+}
+function bulkName(c,i){const f=c.fiche||{};return [f.marque,f.titre].filter(Boolean).join(" ")||`Article ${i+1}`}
+function renderBulk(){
+  const list=$("#bulkList");if(!list)return;
+  $("#bulkBar").classList.toggle("hidden",!bulk.length);
+  const todo=bulk.filter(c=>c.state!=="ready").length,ready=bulk.filter(c=>c.state==="ready").length;
+  $("#bulkGen").classList.toggle("hidden",!todo);
+  $("#bulkGen").textContent=bulkRunning?"Rédaction en cours…":`Rédiger ${todo>1?`les ${todo} annonces`:"l’annonce"}`;
+  $("#bulkGen").disabled=bulkRunning;
+  $("#bulkSave").classList.toggle("hidden",!ready);
+  $("#bulkSave").textContent=`Ajouter ${ready>1?`les ${ready} articles`:"l’article"} à mes articles`;
+  $("#bulkSave").disabled=bulkRunning;
+  $("#bulkMore").classList.toggle("hidden",!isPro()&&bulk.length>=BULK_FREE);
+  list.innerHTML=bulk.map((c,i)=>{
+    const [cls,lab]=BSTATE[c.state],f=c.fiche||{};
+    const th=c.photos.slice(0,3).map((ph,j)=>`<img src="${esc(ph.url)}" alt="${j?"":"Photo de couverture"}">`).join("")+(c.photos.length>3?`<span class="more">+${c.photos.length-3}</span>`:"")+(bulkRunning?"":`<button type="button" class="addph" data-badd="${c.key}">+ Photo</button>`);
+    let body="";
+    if(c.state==="ready"){
+      const meta=[f.taille&&("Taille "+f.taille),f.etat,TIER_LABEL[c.tier]].filter(Boolean).join(" · ");
+      body=`<p class="bmeta">${esc(meta)}</p>
+      <div class="bprice"><label for="bp-${c.key}" style="margin:0">Prix</label><input id="bp-${c.key}" type="number" min="0" step="1" inputmode="decimal" data-bprice="${c.key}" value="${esc(c.prix??"")}" class="${c.prix?"":"miss"}"> €
+        ${c.advice?`<small>conseillé : ${eur(c.advice)}</small>`:!c.prix?`<small>à indiquer avant d’ajouter</small>`:""}</div>
+      <div class="bsites">${PLATFORMS.map(p=>{const r=c.rules[p.id],blocked=r.state==="blocked"||r.state==="noaccount";
+        return `<button type="button" class="bsite" data-bsite="${c.key}|${p.id}" aria-pressed="${c.sel.includes(p.id)}" ${blocked?`disabled title="${esc(r.why||"")}"`:""}>${p.name}${r.state==="noaccount"?" · compte à ajouter":blocked?" · non accepté":""}</button>`}).join("")}</div>
+      ${c.sel.length?`<details class="bprev"><summary>Voir les annonces</summary>${c.sel.map(id=>{const t=c.texts[id]||{};return `<div class="bl"><div class="row"><strong>${P[id].name}</strong><span><button class="btn sm" type="button" data-bcopy="${c.key}|${id}|titre">Titre</button> <button class="btn sm" type="button" data-bcopy="${c.key}|${id}|description">Description</button></span></div><p><b>${esc(t.titre||"")}</b>\n${esc(t.description||"")}</p></div>`}).join("")}</details>`:`<p class="bmeta">Aucun site sélectionné.</p>`}`;
+    }else if(c.state==="error")body=`<p class="bmeta">${esc(c.msg||"La rédaction n’a pas marché.")}</p>`;
+    else body=`<p class="bmeta">${c.photos.length} photo${c.photos.length>1?"s":""}</p>`;
+    const acts=bulkRunning?"":[
+      i>0?`<button class="btn sm" type="button" data-bmerge="${c.key}">Avec le précédent</button>`:"",
+      c.photos.length>1?`<button class="btn sm" type="button" data-bsplit="${c.key}">Séparer les photos</button>`:"",
+      c.state==="ready"?`<button class="btn sm" type="button" data-bdetail="${c.key}">Détailler</button>`:"",
+      `<button class="btn sm" type="button" data-bdel="${c.key}">Retirer</button>`].join("");
+    return `<div class="bcard" data-k="${c.key}"><div class="bthumbs">${th}</div><div>
+      <div class="bhead"><h3>${esc(bulkName(c,i))}</h3><span class="chip ${cls}">${lab}</span></div>${body}<div class="bacts">${acts}</div></div></div>`;
+  }).join("");
+}
+async function shrink(blob,max){
+  try{const bmp=await createImageBitmap(blob);const r=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const c=document.createElement("canvas");c.width=Math.round(bmp.width*r);c.height=Math.round(bmp.height*r);
+    c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);bmp.close&&bmp.close();
+    return await new Promise(res=>c.toBlob(b=>res(b||blob),"image/jpeg",.8));}catch(e){return blob}
+}
+async function groupPhotos(blobs){
+  const n=blobs.length;
+  if(n<2)return [[0]];
+  if(!sample||!imgCaps||n>(imgCaps.maxCount||0))return null;
+  const small=[];for(const b of blobs)small.push(await shrink(b,512));
+  const prompt=`Voici ${n} photos numérotées de 1 à ${n}, dans l’ordre. Ce sont des photos d’articles de seconde main qu’une personne veut vendre. Regroupe les photos qui montrent le même article : le même objet sous un autre angle, son étiquette, un détail ou un défaut. Deux articles différents, même très ressemblants, vont dans des groupes différents. Chaque photo appartient à exactement un groupe.
+Réponds UNIQUEMENT avec un objet JSON, sans texte autour, de la forme {"groupes":[[1,2],[3]]}.`;
+  const out=await sample.json(prompt,{images:small,modelTier:"default"});
+  const g=out&&Array.isArray(out.groupes)?out.groupes:null;if(!g)return null;
+  const seen=new Set(),res=[];
+  for(const grp of g){if(!Array.isArray(grp))return null;const ix=grp.map(x=>parseInt(x,10)-1);
+    for(const i of ix){if(isNaN(i)||i<0||i>=n||seen.has(i))return null;seen.add(i)}if(ix.length)res.push(ix.sort((a,b)=>a-b))}
+  if(seen.size!==n)return null;
+  return res.sort((a,b)=>a[0]-b[0]);
+}
+async function intake(files,append){
+  const list=[...files].filter(f=>f.type.startsWith("image/"));if(!list.length)return;
+  const st=append?bulkStatus:photoStatus;
+  st("On prépare tes photos…");
+  const blobs=[];for(const f of list.slice(0,60))blobs.push(await compress(f));
+  let groups=null,fallback=false;
+  if(blobs.length===1)groups=[[0]];
+  else{
+    st(`On regarde ce qui va ensemble dans tes ${blobs.length} photos…`);
+    try{groups=await groupPhotos(blobs)}catch(e){groups=null}
+    if(!groups){groups=blobs.map((_,i)=>[i]);fallback=true}
+  }
+  if(!append&&pubMode==="single"&&groups.length===1){
+    photos=blobs.slice(0,MAX_PHOTOS).map(b=>({key:uid(),blob:b,url:URL.createObjectURL(b),assetId:null}));
+    renderPhotos();photoStatus(blobs.length>1?"Un seul article détecté.":"");
+    if(sample&&imgCaps)$("#fill").click();
+    return;
+  }
+  let gs=groups,skipped=0;
+  if(!isPro()){const room=Math.max(0,BULK_FREE-bulk.length);if(gs.length>room){skipped=gs.length-room;gs=gs.slice(0,room)}}
+  gs.forEach(g=>bulk.push({key:uid(),photos:g.map(i=>({key:uid(),blob:blobs[i],url:URL.createObjectURL(blobs[i])})),state:"idle",prix:"",sel:[]}));
+  photoStatus("");
+  setPubMode("bulk");
+  const found=fallback?`On n’a pas pu regrouper tes photos automatiquement : une photo = un article. Regroupe celles du même article avec « Avec le précédent ».`
+    :`${groups.length} article${groups.length>1?"s":""} trouvé${groups.length>1?"s":""} dans tes ${blobs.length} photos. Un regroupement à corriger ? « Avec le précédent » ou « Séparer les photos ».`;
+  bulkStatus(found+(skipped?` En gratuit, ${BULK_FREE} articles à la fois : ${skipped} article${skipped>1?"s":""} non ajouté${skipped>1?"s":""}. Passe à Pro pour tout publier d’un coup.`:""),!!skipped||fallback);
+}
+function snapForm(){return {v:Object.fromEntries(FIELDS.map(f=>[f,$("#"+f).value])),tierSel:$("#tierSel").value,sel:[...selection],status:$("#status").textContent}}
+function restoreForm(sn){FIELDS.forEach(f=>$("#"+f).value=sn.v[f]);$("#tierSel").value=sn.tierSel;tier=undefined;refreshRouting(true);selection=new Set(sn.sel);renderRouting();setStatus(sn.status)}
+async function runBulk(){
+  if(!sample||!imgCaps){bulkStatus("La lecture des photos par l’IA n’est pas disponible ici.",true);return}
+  const todo=bulk.filter(c=>c.state!=="ready");if(!todo.length)return;
+  bulkRunning=true;const sn=snapForm();let done=0,failed=0;
+  try{
+    for(const c of todo){
+      bulkStatus(`Article ${done+failed+1} sur ${todo.length}…`);
+      try{
+        c.state="read";renderBulk();
+        const imgs=c.photos.slice(0,Math.min(imgCaps.maxCount||4,4)).map(ph=>ph.blob);
+        const out=await aiFiche(imgs)||{};
+        FIELDS.forEach(f=>{const el=$("#"+f);if(el.tagName!=="SELECT")el.value=""});
+        ["titre","marque","categorie","taille","couleur","matiere","notes"].forEach(f=>{const v=typeof out[f]==="string"?out[f].trim():"";$("#"+f).value=v});
+        $("#etat").value=ETATS.includes(out.etat)?out.etat:"Très bon état";
+        $("#envoi").value=settings.envoiDefaut;$("#prix").value=c.prix||"";
+        $("#tierSel").value="auto";tier=undefined;refreshRouting(true);
+        c.tier=tier||"courante";c.valeur=isValeur();
+        c.rules=Object.fromEntries(PLATFORMS.map(p=>[p.id,rule(p.id)]));
+        const allowed=PLATFORMS.map(p=>p.id).filter(id=>!isBlocked(id));
+        c.sel=[...selection].filter(id=>allowed.includes(id));
+        c.advice=isPro()&&advRecs?advRecs.price:null;
+        if(!c.prix&&c.advice)c.prix=c.advice;
+        c.fiche=readForm();
+        c.state="write";renderBulk();
+        let texts={};
+        if(allowed.length){try{texts=await aiListing(c.fiche,allowed,c.valeur,[])}catch(e){texts=templateListing(c.fiche,allowed,c.valeur,[])}}
+        c.texts=texts;c.state="ready";done++;
+      }catch(e){c.state="error";failed++;
+        c.msg=e&&e.code==="not_granted"?"Lecture des photos refusée.":e&&e.code==="rate_limited"?"Trop de demandes d’un coup : relance dans une minute.":"La rédaction n’a pas marché. Relance, ou détaille l’article à la main.";
+        if(e&&(e.code==="not_granted"||e.code==="rate_limited")){renderBulk();break}}
+      renderBulk();
+    }
+  }finally{bulkRunning=false;restoreForm(sn);renderBulk()}
+  const miss=bulk.filter(c=>c.state==="ready"&&!c.prix).length;
+  bulkStatus(failed?`${done} annonce${done>1?"s":""} prête${done>1?"s":""}, ${failed} à reprendre.`:`C’est prêt pour ${done} article${done>1?"s":""}. ${miss?`Il reste ${miss} prix à indiquer.`:"Relis, ajuste, et ajoute-les à tes articles."}`,!!failed);
+}
+function buildFromBulk(c){
+  const d={...c.fiche,prix:c.prix!==""&&c.prix!=null?String(c.prix):""};
+  const listings={};
+  c.sel.forEach(id=>{const t=c.texts[id]||{titre:bulkName(c,0),description:""};const prix=priceFor(id,d.prix,c.valeur,NaN);
+    listings[id]={titre:t.titre||"",description:t.description||"",prix,publie:false,fields:specFields(id,d,c.tier==="objets",typeof t.categorie==="string"?t.categorie.trim():"",id==="vinted"&&/^(petit|moyen|grand)/i.test(t.colis||"")?t.colis:null,prix)}});
+  return {id:null,created:Date.now(),fiche:d,tier:c.tier,valeur:c.valeur,plancher:null,justifs:[],status:"en vente",soldOn:null,listings};
+}
+async function saveBulk(){
+  const ready=bulk.filter(c=>c.state==="ready");
+  const missing=ready.filter(c=>!c.prix||!c.sel.length);
+  if(missing.length){bulkStatus(`Indique un prix et au moins un site pour chaque article (${missing.length} à compléter).`,true);renderBulk();return}
+  bulkRunning=true;renderBulk();let n=0;
+  try{
+    for(const c of ready){
+      bulkStatus(`Enregistrement ${n+1} sur ${ready.length}…`);
+      const it=buildFromBulk(c);
+      if(assets){it.photos=[];for(const ph of c.photos){const r=await assets.upload(ph.blob);it.photos.push({id:r.id,url:r.url})}}
+      await saveItem(it,true);n++;
+      bulk=bulk.filter(x=>x!==c);
+    }
+    toast(`${n} article${n>1?"s":""} ajouté${n>1?"s":""} à tes articles. Va te faire un café.`);bulkStatus("");
+  }catch(e){bulkStatus("L’enregistrement a été interrompu. Réessaie dans un instant.",true)}
+  finally{bulkRunning=false;bulk.length?renderBulk():setPubMode("single")}
+}
+$("#bulkDrop").addEventListener("click",()=>{bulkAddTarget=null;$("#bulkFile").click()});
+$("#bulkDrop").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#bulkFile").click()}});
+["dragover","dragenter"].forEach(t=>$("#bulkDrop").addEventListener(t,e=>{e.preventDefault();$("#bulkDrop").classList.add("over")}));
+["dragleave","drop"].forEach(t=>$("#bulkDrop").addEventListener(t,e=>{e.preventDefault();$("#bulkDrop").classList.remove("over")}));
+$("#bulkDrop").addEventListener("drop",e=>intake(e.dataTransfer.files,true));
+$("#bulkFile").addEventListener("change",e=>{intake(e.target.files,true);e.target.value=""});
+$("#bulkAddFile").addEventListener("change",e=>{bulkAdd(e.target.files,bulkAddTarget);e.target.value=""});
+$("#bulkMore").addEventListener("click",()=>{bulkAddTarget=null;$("#bulkFile").click()});
+$("#bulkGen").addEventListener("click",runBulk);
+$("#bulkSave").addEventListener("click",saveBulk);
+$("#bulkClear").addEventListener("click",()=>{if(!confirm("Retirer tous les articles de cette liste ?"))return;bulk.forEach(c=>c.photos.forEach(ph=>URL.revokeObjectURL(ph.url)));bulk=[];bulkStatus("");setPubMode("single")});
+$("#bulkList").addEventListener("input",e=>{const k=e.target.dataset.bprice;if(!k)return;const c=bulk.find(x=>x.key===k);const n=parseFloat(e.target.value.replace(",","."));c.prix=isNaN(n)?"":Math.round(n);e.target.classList.toggle("miss",!c.prix)});
+$("#bulkList").addEventListener("click",e=>{
+  const g=a=>e.target.closest(`[${a}]`);let b;
+  if(b=g("data-badd")){bulkAddTarget=b.dataset.badd;$("#bulkAddFile").click();return}
+  if(b=g("data-bsite")){const [k,id]=b.dataset.bsite.split("|");const c=bulk.find(x=>x.key===k);c.sel=c.sel.includes(id)?c.sel.filter(x=>x!==id):[...c.sel,id];renderBulk();return}
+  if(b=g("data-bcopy")){const [k,id,f]=b.dataset.bcopy.split("|");const c=bulk.find(x=>x.key===k);copy((c.texts[id]||{})[f]||"");return}
+  if(b=g("data-bmerge")){const i=bulk.findIndex(x=>x.key===b.dataset.bmerge);if(i>0){bulk[i-1].photos.push(...bulk[i].photos);bulk[i-1].state="idle";bulk.splice(i,1);renderBulk()}return}
+  if(b=g("data-bsplit")){const i=bulk.findIndex(x=>x.key===b.dataset.bsplit);if(i>=0){const c=bulk[i];bulk.splice(i,1,...c.photos.map(ph=>({key:uid(),photos:[ph],state:"idle",prix:"",sel:[]})));renderBulk()}return}
+  if(b=g("data-bdel")){const i=bulk.findIndex(x=>x.key===b.dataset.bdel);if(i>=0){bulk[i].photos.forEach(ph=>URL.revokeObjectURL(ph.url));bulk.splice(i,1);bulk.length?renderBulk():setPubMode("single")}return}
+  if(b=g("data-bdetail")){
+    const c=bulk.find(x=>x.key===b.dataset.bdetail);if(!c)return;
+    const it=buildFromBulk(c);
+    photos.forEach(p=>{if(!p.assetId)URL.revokeObjectURL(p.url)});removedAssets=[];
+    photos=c.photos.map(ph=>({key:uid(),blob:ph.blob,url:ph.url,assetId:null}));
+    bulk=bulk.filter(x=>x!==c);
+    FIELDS.forEach(f=>$("#"+f).value=it.fiche[f]||"");$("#tierSel").value="auto";
+    tier=undefined;refreshRouting(true);selection=new Set(c.sel);renderRouting();
+    current=it;renderPhotos();renderListings();setStatus("Article ouvert en détail : ajuste ce que tu veux, puis ajoute-le à tes articles.");
+    setPubMode("single");window.scrollTo(0,0);
+    if(bulk.length)setStatus("Article ouvert en détail. Les autres articles t’attendent : ils réapparaissent une fois celui-ci ajouté.");
+  }
+});
+
 function resetForm(){
   FIELDS.forEach(f=>{const el=$("#"+f);if(el.tagName!=="SELECT")el.value=""});
   $("#etat").value="Très bon état";$("#envoi").value=settings.envoiDefaut;$("#tierSel").value="auto";$("#plancher").value="";
@@ -1391,41 +1638,136 @@ async function saveItem(it,quiet){
 }
 
 /* ================= stock ================= */
+/* ===== transactions (statuts lus sur les sites, jamais modifiés par The Sellist) ===== */
+const TX={reserve:"Offre acceptée",paye:"Payé",envoye:"Envoyé",finalise:"Finalisé",annule:"Annulée",abandonne:"Abandonnée",retour:"Retournée"};
+const TX_FLOW=["reserve","paye","envoye","finalise"];
+const TX_LIVE=["reserve","paye","envoye"];
+const AUTO={ebay:true}; // sites où une API officielle permet pause, retrait et réactivation automatiques
+const SRC={api:"Statut transmis par",declare:"Déclaré par toi",demo:"Simulation (démo)"};
+function txOf(it){
+  if(it.tx)return it.tx;
+  if(it.status==="vendu"&&it.soldOn)return {site:it.soldOn,status:"finalise",source:"declare",history:[{s:"finalise",at:it.soldAt||it.created||Date.now()}]};
+  return null;
+}
+const allTx=it=>[...(it.txPast||[]),txOf(it)].filter(Boolean);
+function applyTx(it,site,status,source){
+  const now=Date.now();
+  let tx=it.tx&&it.tx.site===site&&TX_LIVE.includes(it.tx.status)?it.tx:{site,history:[]};
+  tx.status=status;tx.source=source;tx.history.push({s:status,at:now});
+  const others=Object.keys(it.listings||{}).filter(id=>id!==site);
+  if(TX_LIVE.includes(status)){
+    it.tx=tx;it.status="en cours";it.relistPending=false;it.lastFail=null;
+    others.forEach(id=>{if(it.listings[id].publie)it.listings[id].pause=true});
+  }else if(status==="finalise"){
+    it.tx=tx;it.status="vendu";it.soldOn=site;it.soldAt=tx.history[0].at;it.relistPending=false;it.lastFail=null;
+    if(it.soldPrice==null||it.soldPrice==="")it.soldPrice=(it.listings[site]||{}).prix??null;
+    others.forEach(id=>{if(AUTO[id]&&it.listings[id].publie){it.listings[id].publie=false;it.listings[id].pause=false;it.listings[id].autoRemoved=true}});
+  }else{
+    it.txPast=[...(it.txPast||[]),JSON.parse(JSON.stringify(tx))];
+    it.tx=null;it.status="en vente";it.soldOn=null;it.soldAt=null;it.soldPrice=null;
+    it.lastFail={site,status,at:now};
+    it.relistPending=others.some(id=>it.listings[id].pause);
+  }
+}
+function txTimeline(tx){
+  if(!tx)return "";
+  const failed=!TX_FLOW.includes(tx.status);
+  const reached=new Set(tx.history.map(h=>h.s));
+  const steps=TX_FLOW.filter(s=>!failed||reached.has(s));
+  const curIdx=failed?-1:TX_FLOW.indexOf(tx.status);
+  const lis=steps.map(s=>{const i=TX_FLOW.indexOf(s);return `<li class="${i===curIdx?"cur":(failed||i<curIdx)?"done":""}">${TX[s]}</li>`}).join("")+(failed?`<li class="fail">${TX[tx.status]}</li>`:"");
+  const last=tx.history[tx.history.length-1];
+  const src=tx.source==="api"?`${SRC.api} ${P[tx.site].name}`:SRC[tx.source]||"";
+  return `<ol class="txline" aria-label="Étapes de la vente">${lis}</ol><p class="txsrc">${src}${last?` · ${new Date(last.at).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}`:""}</p>`;
+}
+function txChip(it){
+  const tx=txOf(it);
+  if(tx&&TX_LIVE.includes(tx.status))return `<span class="chip">Vente en cours · ${TX[tx.status]}</span>`;
+  if(tx&&tx.status==="finalise")return `<span class="chip fin">Vendu</span>`;
+  if(it.lastFail)return `<span class="chip fail">Vente ${TX[it.lastFail.status].toLowerCase()}</span>`;
+  return "";
+}
+
 function renderStock(){
   if(!$("#view-stats").classList.contains("hidden"))renderStats();
   $("#stockCount").textContent=items.length?` (${items.length})`:"";
   const list=$("#stockList");
   if(!items.length){
     list.innerHTML=`<div class="empty"><h2>Rien en vente pour l’instant.</h2><p>Vide ton dressing, pas ton <em class="serif">week-end.</em></p><button class="btn go" data-go>Publier un article</button></div>`;return}
-  const sorted=[...items].sort((a,b)=>(a.status==="vendu")-(b.status==="vendu")||b.created-a.created);
-  list.innerHTML=sorted.map(it=>{
+  const rank=it=>it.status==="en cours"?0:it.relistPending?0:it.status==="vendu"?2:1;
+  const cls=it=>it.status==="vendu"?"vendu":it.status==="en cours"?"encours":it.relistPending?"reactiver":Object.values(it.listings||{}).some(l=>l.publie)?"enligne":"horsligne";
+  const STL={horsligne:"Pas encore en ligne",enligne:"En ligne",encours:"Vente en cours",reactiver:"À réactiver",vendu:"Vendu"};
+  const shown=items.filter(it=>(!SF.site||(it.listings||{})[SF.site])&&(!SF.status||cls(it)===SF.status));
+  [...selected].forEach(id=>{if(!shown.some(it=>it.id===id&&it.status!=="vendu"))selected.delete(id)});
+  const bar=`<div class="stock-bar">
+    <select data-sf="site" aria-label="Filtrer par site" class="${SF.site?"on":""}"><option value="">Tous les sites</option>${PLATFORMS.map(p=>`<option value="${p.id}" ${SF.site===p.id?"selected":""}>${p.name}</option>`).join("")}</select>
+    <select data-sf="status" aria-label="Filtrer par statut" class="${SF.status?"on":""}"><option value="">Tous les statuts</option>${Object.entries(STL).map(([k,v])=>`<option value="${k}" ${SF.status===k?"selected":""}>${v}</option>`).join("")}</select>
+    <span class="cnt">${shown.length} article${shown.length>1?"s":""}</span></div>
+    ${selected.size?`<div class="sel-bar"><strong>${selected.size} sélectionné${selected.size>1?"s":""}</strong>
+      <select id="selSite" aria-label="Site de la vente"><option value="">Vendu sur…</option>${PLATFORMS.map(p=>`<option value="${p.id}">${p.name}</option>`).join("")}</select>
+      <button class="btn go sm" type="button" id="selSold">Marquer vendu</button>
+      <button class="linkb" type="button" id="selAll">Tout sélectionner</button><button class="linkb" type="button" id="selNone">Annuler</button></div>`:""}`;
+  const sorted=shown.sort((a,b)=>rank(a)-rank(b)||b.created-a.created);
+  list.innerHTML=bar+(sorted.length?"":`<p class="done" style="text-align:center;padding:24px 0">Aucun article ne correspond à ces filtres.</p>`)+sorted.map(it=>{
     const f=it.fiche||{},sold=it.status==="vendu",ids=Object.keys(it.listings||{}).filter(id=>P[id]);
+    const tx=txOf(it),live=tx&&TX_LIVE.includes(tx.status);
     const online=ids.filter(id=>it.listings[id].publie);
     const toRemove=sold?online.filter(id=>id!==it.soldOn):[];
+    const paused=ids.filter(id=>it.listings[id].pause&&it.listings[id].publie);
     const prs=ids.map(id=>parseFloat(it.listings[id].prix)).filter(n=>!isNaN(n)&&n>0);
-    const spreadWarn=it.valeur&&!sold&&prs.length>1&&Math.max(...prs)/Math.min(...prs)>1.1;
+    const spreadWarn=it.valeur&&!sold&&!live&&prs.length>1&&Math.max(...prs)/Math.min(...prs)>1.1;
     let block="";
-    if(sold&&toRemove.length)block=`<div class="alert"><strong>Vendu sur ${P[it.soldOn].name}, bien joué.</strong> Retire-le vite de :
-      <div class="checks">${toRemove.map(id=>`<label class="check"><input type="checkbox" data-removed="${id}"> ${P[id].name}</label>`).join("")}</div></div>`;
-    else if(sold)block=`<p class="done">Vendu sur ${P[it.soldOn]?P[it.soldOn].name:"un site"}. Plus rien en ligne ailleurs, c’est tout bon.</p>`;
-    else if(!online.length)block=`<p class="done">Pas encore en ligne. Coche « En ligne » sur chaque annonce publiée pour qu’on garde le fil.</p>`;
+    if(live){
+      const manual=paused.filter(id=>!AUTO[id]);
+      block=`<div class="alert"><strong>${TX[tx.status]} sur ${P[tx.site].name}.</strong> Tes autres annonces sont en pause le temps de la vente.${manual.length?` Sur ${manual.map(id=>P[id].name).join(" et ")}, mets-${manual.length>1?"les":"la"} en pause toi-même.`:""}${txTimeline(tx)}<p class="txsrc">Les offres et la négociation se gèrent sur ${P[tx.site].name} : The Sellist les lit, mais n’y répond jamais à ta place.</p></div>`;
+    }else if(sold){
+      const auto=ids.filter(id=>it.listings[id].autoRemoved);
+      block=toRemove.length?`<div class="alert"><strong>Vendu sur ${P[it.soldOn].name}, bien joué.</strong>${auto.length?` Retiré automatiquement de ${auto.map(id=>P[id].name).join(" et ")}.`:""} Retire-le vite de :
+        <div class="checks">${toRemove.map(id=>`<label class="check"><input type="checkbox" data-removed="${id}"> ${P[id].name}</label>`).join("")}</div>${txTimeline(tx)}</div>`
+        :`<div class="alert"><strong>Vendu sur ${P[it.soldOn]?P[it.soldOn].name:"un site"}.</strong> Plus rien en ligne ailleurs, c’est tout bon.${txTimeline(tx)}</div>`;
+    }else if(it.relistPending&&it.lastFail){
+      const fs=P[it.lastFail.site].name;
+      block=`<div class="alert"><strong>La vente sur ${fs} n’a pas abouti (${TX[it.lastFail.status].toLowerCase()}).</strong> Remets tes autres annonces en ligne quand tu veux :
+        <div class="relist">${paused.map(id=>AUTO[id]?`<div class="rl"><span>${P[id].name}</span><button class="btn go sm" type="button" data-relist="${id}">Réactiver en un clic</button></div>`
+          :`<div class="rl"><span>${P[id].name}</span><a class="btn sm" href="${SHOP_URLS[id]}" target="_blank" rel="noopener">Réactiver sur le site</a><button class="btn sm" type="button" data-relist="${id}">C’est fait</button></div>`).join("")}</div>
+        <p class="txsrc">Vérifie aussi que l’annonce est de nouveau visible sur ${fs}.</p></div>`;
+    }else if(it.lastFail){
+      block=`<p class="done">La dernière vente sur ${P[it.lastFail.site].name} n’a pas abouti (${TX[it.lastFail.status].toLowerCase()}). L’article est de nouveau en vente.</p>`;
+    }else if(!online.length)block=`<p class="done">Pas encore en ligne. Coche « En ligne » sur chaque annonce publiée pour qu’on garde le fil.</p>`;
+    const rowSt=id=>{
+      const l=it.listings[id];
+      if(tx&&tx.site===id&&(live||sold))return sold?["sold","Vendu"]:["on",TX[tx.status]];
+      if(l.autoRemoved&&sold)return ["","Retiré"];
+      if(l.pause&&l.publie)return ["","En pause"];
+      return l.publie?["on","En ligne"]:["","Pas en ligne"];
+    };
     const cov=(it.photos||[])[0];
+    const simSites=ids;
     return `<div class="item" data-id="${it.id}"><div class="item-row">
       ${cov?`<img class="cov" src="${esc(photoSrc(cov))}" alt="">`:""}<div class="body">
-      <div class="item-h"><h3>${esc([f.marque,f.titre].filter(Boolean).join(" "))}${it.valeur?`<span class="badge">Pièce de valeur</span>`:""}</h3><span class="base">${f.prix?"Prix de base "+esc(f.prix)+" €":""}</span></div>
-      <div class="plist">${ids.map(id=>{const pub=it.listings[id].publie,isSold=sold&&it.soldOn===id;
-        const pr=it.listings[id].prix;const locked=sold;
-        return `<div class="pl-row"><span class="pl-site">${P[id].name}</span><span class="pl-st ${isSold?"sold":pub?"on":""}">${isSold?"Vendu":pub?"En ligne":"Pas en ligne"}</span><label class="pl-price"><input type="number" min="0" step="1" inputmode="decimal" data-price="${id}" value="${esc(pr??"")}" placeholder="–" aria-label="Prix affiché sur ${P[id].name}" ${locked?"disabled":""}> €</label></div>`}).join("")}</div>
+      <div class="item-h"><h3>${sold?"":`<input type="checkbox" class="selbox" data-sel aria-label="Sélectionner" ${selected.has(it.id)?"checked":""}>`}${esc([f.marque,f.titre].filter(Boolean).join(" "))}${it.valeur?`<span class="badge">Pièce de valeur</span>`:""}</h3><span class="base">${f.prix?"Prix de base "+esc(f.prix)+" €":""}</span></div>
+      ${txChip(it)?`<div style="margin-top:6px">${txChip(it)}</div>`:""}
+      <div class="plist">${ids.map(id=>{const [cls,lab]=rowSt(id);
+        const pr=it.listings[id].prix;const locked=sold||live;
+        return `<div class="pl-row"><span class="pl-site">${P[id].name}</span><span class="pl-st ${cls}">${lab}</span><label class="pl-price"><input type="number" min="0" step="1" inputmode="decimal" data-price="${id}" value="${esc(pr??"")}" placeholder="–" aria-label="Prix affiché sur ${P[id].name}" ${locked?"disabled":""}> €</label></div>`}).join("")}</div>
       ${spreadWarn?`<div class="alert" style="margin-bottom:10px">Plus de 10 % d’écart de prix entre les sites. Pour une pièce de valeur, les acheteurs avertis le remarquent.</div>`:""}
       ${block}
       ${sold?`<label class="soldp">Vendu à <input type="number" min="0" step="1" inputmode="decimal" data-soldprice value="${esc(it.soldPrice??"")}" aria-label="Prix de vente final"> € <span class="s" style="color:var(--muted);font-size:13px">prix final, après négociation</span></label>`:""}
       <div class="actions" style="margin-top:12px">
-        ${sold?"":`<select class="btn sm" data-soldsel aria-label="Site de la vente" style="width:auto"><option value="">C’est vendu ? Sur…</option>${ids.map(id=>`<option value="${id}">${P[id].name}</option>`).join("")}</select>`}
+        ${sold||live?"":`<select class="btn sm" data-soldsel aria-label="Site de la vente" style="width:auto"><option value="">C’est vendu ? Sur…</option>${ids.map(id=>`<option value="${id}">${P[id].name}</option>`).join("")}</select>`}
         <button class="btn sm" data-act="edit">${sold?"Voir":"Modifier"}</button>
         <button class="btn sm" data-act="delete">Supprimer</button>
-      </div></div></div></div>`}).join("");
+      </div>
+      ${sold||!simSites.length?"":`<details class="sim"><summary>Simuler un statut transmis par un site (démo)</summary><div class="row">
+        <select data-simsite aria-label="Site">${simSites.map(id=>`<option value="${id}" ${tx&&tx.site===id?"selected":""}>${P[id].name}</option>`).join("")}</select>
+        <select data-simstatus aria-label="Statut">${Object.keys(TX).map(k=>`<option value="${k}">${TX[k]}</option>`).join("")}</select>
+        <button class="btn sm" type="button" data-act="sim">Simuler</button></div></details>`}
+      </div></div></div>`}).join("");
 }
+const SF={site:"",status:""},selected=new Set();
 $("#stockList").addEventListener("change",async e=>{
+  if(e.target.dataset.sf){SF[e.target.dataset.sf]=e.target.value;renderStock();return}
+  if(e.target.matches("[data-sel]")){const id=e.target.closest(".item").dataset.id;e.target.checked?selected.add(id):selected.delete(id);renderStock();return}
   const card=e.target.closest(".item");if(!card)return;
   const it=items.find(x=>x.id===card.dataset.id);if(!it)return;
   if(e.target.matches("[data-soldprice]")){
@@ -1439,13 +1781,27 @@ $("#stockList").addEventListener("change",async e=>{
     (l.fields||[]).forEach(fd=>{if(fd.label==="Prix")fd.value=String(l.prix)});
     await saveItem(it,true);toast(`Prix ${P[id].name} mis à jour.`);return;
   }
-  if(e.target.matches("[data-soldsel]")&&e.target.value){it.status="vendu";it.soldOn=e.target.value;it.soldAt=Date.now();it.soldPrice=(it.listings[it.soldOn]||{}).prix??"";await saveItem(it,true);toast("Vendu ! Retire-le vite des autres sites.")}
+  if(e.target.matches("[data-soldsel]")&&e.target.value){applyTx(it,e.target.value,"finalise","declare");await saveItem(it,true);toast("Vendu ! Retire-le vite des autres sites.")}
   else if(e.target.matches("[data-removed]")&&e.target.checked){it.listings[e.target.dataset.removed].publie=false;await saveItem(it,true)}
 });
 $("#stockList").addEventListener("click",async e=>{
+  if(e.target.closest("#selNone")){selected.clear();renderStock();return}
+  if(e.target.closest("#selAll")){document.querySelectorAll("#stockList [data-sel]").forEach(c=>selected.add(c.closest(".item").dataset.id));renderStock();return}
+  if(e.target.closest("#selSold")){
+    const site=$("#selSite").value;if(!site){toast("Choisis le site de la vente.");return}
+    const list=items.filter(it=>selected.has(it.id)&&it.status!=="vendu");
+    if(!confirm(`Marquer ${list.length} article${list.length>1?"s":""} comme vendu${list.length>1?"s":""} sur ${P[site].name} ?`))return;
+    for(const it of list){applyTx(it,site,"finalise","declare");await saveItem(it,true)}
+    selected.clear();renderStock();toast(`${list.length} vendu${list.length>1?"s":""} sur ${P[site].name}. Retire-les des autres sites.`);return}
   if(e.target.closest("[data-go]")){showView("publier");return}
+  const rl=e.target.closest("[data-relist]");
+  if(rl){const it=items.find(x=>x.id===rl.closest(".item").dataset.id);if(!it)return;const id=rl.dataset.relist;
+    it.listings[id].pause=false;it.relistPending=Object.values(it.listings).some(l=>l.pause&&l.publie);
+    await saveItem(it,true);toast(`De nouveau en ligne sur ${P[id].name}.`);return}
   const b=e.target.closest("[data-act]");if(!b)return;
   const it=items.find(x=>x.id===b.closest(".item").dataset.id);if(!it)return;
+  if(b.dataset.act==="sim"){const card=b.closest(".item");const site=card.querySelector("[data-simsite]").value,st=card.querySelector("[data-simstatus]").value;
+    applyTx(it,site,st,"demo");await saveItem(it,true);toast(`${P[site].name} : ${TX[st].toLowerCase()} (simulation).`);return}
   if(b.dataset.act==="delete"){if(confirm("Supprimer cet article et ses photos ?")){try{await store.del(it.id);if(assets)for(const ph of it.photos||[]){try{await assets.delete(ph.id)}catch(e){}}toast("Supprimé.")}catch(_){toast("Suppression impossible.")}}}
   if(b.dataset.act==="edit"){
     current=JSON.parse(JSON.stringify(it));
@@ -1490,6 +1846,13 @@ function demoItems(){
     const nego=0.8+rnd()*0.2;
     out.push({id:"demo"+i,created,tier:k[2],fiche:{titre:k[0],marque:k[1],etat,prix:String(Math.round(prix*etatF)),achat:rnd()<0.6?String(Math.round(prix*(0.3+rnd()*0.3))):""},
       status:sold?"vendu":"en vente",soldOn:sold?soldOn:null,soldAt:sold?soldAt:null,soldPrice:sold?Math.round(listings[soldOn].prix*nego):null,listings});
+    const it=out[out.length-1],src=s=>s==="ebay"?"api":"declare";
+    const mkTx=(site,upto,t0)=>{const hist=[];const steps=upto==="annule"||upto==="abandonne"||upto==="retour"?["reserve","paye",...(upto==="retour"?["envoye"]:[]),upto]:TX_FLOW.slice(0,TX_FLOW.indexOf(upto)+1);
+      steps.forEach((st,j)=>hist.push({s:st,at:Math.min(now,t0+j*DAY*(1+rnd()*2))}));return {site,status:upto,source:src(site),history:hist}};
+    if(rnd()<0.22){const fs=ids[Math.floor(rnd()*ids.length)];it.txPast=[mkTx(fs,["annule","annule","abandonne","retour"][Math.floor(rnd()*4)],created+DAY*(2+rnd()*6))];if(!sold)it.lastFail={site:fs,status:it.txPast[0].status,at:it.txPast[0].history.slice(-1)[0].at}}
+    if(sold)it.tx=mkTx(soldOn,"finalise",soldAt);
+    else if(rnd()<0.3){const ls=ids[Math.floor(rnd()*ids.length)];const st=TX_LIVE[Math.floor(rnd()*3)];it.tx=mkTx(ls,st,now-DAY*(1+rnd()*4));it.status="en cours";
+      ids.forEach(id=>{if(id!==ls)it.listings[id].pause=true});}
   }
   return out;
 }
@@ -1554,7 +1917,7 @@ function renderStats(){
   $("#kpisFree").innerHTML=[
     ["Chiffre d’affaires",sold.length?eur(ca):"0 €",days?"sur la période":"depuis le début"],
     ["Articles vendus",sold.length,sold.length?`dont ${sold.filter(it=>it.valeur||it.tier==="luxe").length} pièce(s) de valeur`:"pour l’instant"],
-    ["En vente",active.length,`${active.filter(it=>Object.values(it.listings||{}).some(l=>l.publie)).length} en ligne`],
+    ["En vente",active.length,(()=>{const ec=active.filter(it=>it.status==="en cours").length;return `${active.filter(it=>Object.values(it.listings||{}).some(l=>l.publie)).length} en ligne${ec?` · ${ec} vente${ec>1?"s":""} en cours`:""}`})()],
     ["Prix de vente moyen",sold.length?eur(ca/sold.length):"–",""]
   ].map(([l,v,sub])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div>${sub?`<div class="s">${sub}</div>`:""}</div>`).join("");
 
@@ -1581,7 +1944,7 @@ function renderStats(){
   const maxT=Math.max(1,...tiers.map(x=>x.ca));
 
   // sleeping items
-  const dorm=active.filter(it=>it.created&&now-it.created>30*DAY).sort((a,b)=>a.created-b.created).slice(0,5);
+  const dorm=active.filter(it=>it.status!=="en cours"&&it.created&&now-it.created>30*DAY).sort((a,b)=>a.created-b.created).slice(0,5);
   const bestPlat=[...byPlat].sort((a,b)=>b.ca-a.ca)[0];
   const fastest=[...byPlat].filter(x=>x.delay!=null).sort((a,b)=>a.delay-b.delay)[0];
 
@@ -1634,6 +1997,25 @@ function renderStats(){
     return {b,n:arr.length,avg:avg(pr),ca:pr.reduce((a,c)=>a+c,0),delay:avg(arr.map(delayOf).filter(x=>x!=null))}}).sort((a,b)=>b.ca-a.ca).slice(0,6);
   const pct=x=>(x>0?"−":x<0?"+":"")+Math.abs(Math.round(x*100))+" %";
 
+  // --- suivi des ventes (gratuit) ---
+  const txs=all.flatMap(it=>allTx(it).map(tx=>({it,tx,at:(tx.history[tx.history.length-1]||{}).at||0}))).filter(x=>!from||x.at>=from).sort((a,b)=>b.at-a.at);
+  const chipFor=tx=>TX_LIVE.includes(tx.status)?`<span class="chip">${TX[tx.status]}</span>`:tx.status==="finalise"?`<span class="chip fin">${TX.finalise}</span>`:`<span class="chip fail">${TX[tx.status]}</span>`;
+  $("#txFeed").innerHTML=txs.length?`<ul class="feed">${txs.slice(0,8).map(({it,tx,at})=>{const f=it.fiche||{};const pr=tx.status==="finalise"?salePrice(it):parseFloat((it.listings[tx.site]||{}).prix);
+    return `<li><span>${esc([f.marque,f.titre].filter(Boolean).join(" "))}</span><span class="pr">${chipFor(tx)}<b>${pr?eur(pr):""}</b></span><span class="meta">${P[tx.site].name} · ${new Date(at).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})} · ${tx.source==="api"?"transmis par le site":tx.source==="demo"?"simulation":"déclaré par toi"}</span></li>`}).join("")}</ul>`
+    :`<p class="s" style="color:var(--muted);margin:0">Aucune vente sur la période.</p>`;
+  // --- ventes qui n'aboutissent pas (pro) ---
+  const ended=txs.filter(x=>!TX_LIVE.includes(x.tx.status));
+  const failedTx=ended.filter(x=>x.tx.status!=="finalise");
+  const failRate=ended.length?failedTx.length/ended.length:null;
+  const failBySite=PLATFORMS.map(p=>{const e=ended.filter(x=>x.tx.site===p.id);const fl=e.filter(x=>x.tx.status!=="finalise");return {p,n:e.length,f:fl.length,r:e.length?fl.length/e.length:0}}).filter(x=>x.n);
+  const liveCount=txs.filter(x=>TX_LIVE.includes(x.tx.status)).length;
+
+  $("#proGrid").insertAdjacentHTML("beforeend",`
+    <div class="card box wide"><h3>Ventes qui n’aboutissent pas</h3>
+      <div class="adv-price"><span class="big" style="color:var(--encre)">${failRate!=null?Math.round(failRate*100)+" %":"–"}</span><span>${ended.length?`${failedTx.length} annulée${failedTx.length>1?"s":""}, abandonnée${failedTx.length>1?"s":""} ou retournée${failedTx.length>1?"s":""} sur ${ended.length} vente${ended.length>1?"s":""} terminée${ended.length>1?"s":""}`:"Pas encore de vente terminée"}${liveCount?` · ${liveCount} en cours`:""}</span></div>
+      ${failBySite.map(x=>`<div class="hbar"><span>${x.p.name}</span><div class="track"><div class="fill" style="width:${Math.max(3,x.r*100)}%"></div></div><span class="val">${Math.round(x.r*100)} % · ${x.f}/${x.n}</span></div>`).join("")}
+      ${failBySite.length>1?(()=>{const w=[...failBySite].sort((a,b)=>b.r-a.r)[0];return w.r>0?`<div class="tip">C’est sur <strong>${w.p.name}</strong> que tes ventes échouent le plus souvent. Des photos des défauts et des mesures précises limitent les annulations et les retours.</div>`:""})():""}
+    </div>`);
   $("#proGrid").insertAdjacentHTML("beforeend",`
     <div class="card box wide"><h3>Prix par type d’article</h3>
       ${byType.length?`<div class="tscroll"><table class="ktable"><thead><tr><th>Type</th><th>Ventes</th><th>Prix moyen</th><th>Fourchette habituelle</th><th>Délai</th></tr></thead><tbody>
@@ -1745,6 +2127,7 @@ $("#view-compte").addEventListener("click",async e=>{
   const th=e.target.closest("[data-theme-opt]");
   if(th){settings.theme=th.dataset.themeOpt;applySettings();saveSettings();renderAccount();return}
   if(e.target.closest("#exportCsv")){exportCsv();return}
+  if(e.target.closest("#exportExt")){exportExt();return}
   if(e.target.closest("#wipe")){
     if(!items.length){toast("Tu n’as aucun article pour l’instant.");return}
     if(!confirm(`Supprimer définitivement tes ${items.length} articles et leurs photos ?`))return;
@@ -1752,6 +2135,15 @@ $("#view-compte").addEventListener("click",async e=>{
     toast("Tous tes articles sont supprimés.");
   }
 });
+async function exportExt(){
+  const live=items.filter(it=>it.status!=="vendu");
+  if(!live.length){toast("Aucun article en vente à exporter.");return}
+  const data={app:"The Sellist",version:1,exportedAt:new Date().toISOString(),
+    articles:live.map(articleForExt)};
+  if(!downloads){toast("Export indisponible ici.");return}
+  try{await downloads.save({filename:"the-sellist-extension.json",data:JSON.stringify(data,null,1)})}
+  catch(e){if(e&&e.code!=="declined")toast("Export impossible pour le moment.")}
+}
 async function exportCsv(){
   if(!items.length){toast("Rien à exporter pour l’instant.");return}
   const q=v=>{const s=String(v??"");return /[;"\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s};
@@ -1768,11 +2160,7 @@ $("#accBtn").addEventListener("click",()=>showView("compte"));
 /* ================= views ================= */
 /* ================= public pages & auth ================= */
 const PUBLIC_VIEWS=["accueil","connexion"],APP_VIEWS=["publier","stock","stats","compte"];
-/* Connexion désactivée pour le prototype : tout le monde arrive directement dans l’app.
-   Le code de connexion est conservé ; repasse LOGIN_ENABLED à true pour le réactiver. */
-const LOGIN_ENABLED=false;
 let session=false;try{session=localStorage.getItem("ts-session")==="1"}catch(e){}
-if(!LOGIN_ENABLED)session=true;
 let authMode="login";
 function setAuthMode(m){
   authMode=m;
@@ -1794,9 +2182,7 @@ function signIn(prenom){
   toast(settings.prenom?`Salut ${settings.prenom}, c’est parti.`:"C’est parti.");
 }
 document.querySelectorAll(".auth-tabs button").forEach(b=>b.addEventListener("click",()=>setAuthMode(b.dataset.mode)));
-document.addEventListener("click",e=>{const a=e.target.closest("[data-auth]");if(!a)return;
-  if(!LOGIN_ENABLED){e.preventDefault();showView("publier");return} // « Commencer » mène directement à Publier
-  setAuthMode(a.dataset.auth==="signup"?"signup":"login")});
+document.addEventListener("click",e=>{const a=e.target.closest("[data-auth]");if(a){setAuthMode(a.dataset.auth==="signup"?"signup":"login")}});
 $("#pwToggle").addEventListener("click",()=>{const i=$("#aPw"),show=i.type==="password";i.type=show?"text":"password";$("#pwToggle").textContent=show?"Masquer":"Afficher";$("#pwToggle").setAttribute("aria-label",show?"Masquer le mot de passe":"Afficher le mot de passe")});
 $("#forgot").addEventListener("click",()=>{const em=$("#aEmail").value.trim();
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){authMsg("Indique ton e-mail, on t’envoie un lien.",true);$("#aEmail").focus();return}
@@ -1812,18 +2198,10 @@ $("#authForm").addEventListener("submit",e=>{
   signIn(authMode==="signup"?pr:null);
 });
 document.querySelectorAll("[data-sso]").forEach(b=>b.addEventListener("click",()=>signIn(null)));
-if(!LOGIN_ENABLED){$("#logout").classList.add("hidden");document.querySelectorAll('[data-auth="login"]').forEach(a=>a.classList.add("hidden"));
-  const fin=document.querySelector(".final [data-auth]");if(fin)fin.textContent="Publier mon premier article"}
-/* Prototype non commercial : on cache la section Tarifs de l’accueil.
-   Le code est conservé ; repasse SHOW_PRICING à true pour la réafficher. */
-const SHOW_PRICING=false;
-if(!SHOW_PRICING)$("#tarifs").classList.add("hidden");
 $("#logout").addEventListener("click",()=>{session=false;try{localStorage.removeItem("ts-session")}catch(e){}showView("accueil");toast("À bientôt !")});
-$(".wordmark").addEventListener("click",e=>{e.preventDefault();showView(LOGIN_ENABLED&&session?"publier":"accueil")}); // sans connexion, le logo ramène à l’accueil
+$(".wordmark").addEventListener("click",e=>{e.preventDefault();showView(session?"publier":"accueil")});
 
 function showView(v){
-  if(!LOGIN_ENABLED&&v==="connexion")v="publier";
-  if(SIMPLE_MODE&&(v==="stock"||v==="stats"))v="publier";
   if(!session&&APP_VIEWS.includes(v))v="accueil";
   const pub=PUBLIC_VIEWS.includes(v);
   document.body.classList.toggle("public",pub);
@@ -1842,7 +2220,7 @@ function showView(v){
   window.scrollTo(0,0);
 }
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
-const viewFromHash=()=>({"#stock":"stock","#stats":"stats","#compte":"compte","#publier":"publier","#accueil":"accueil","#connexion":"connexion"})[location.hash]||(LOGIN_ENABLED&&session?"publier":"accueil"); // sans connexion, on arrive sur l’accueil
+const viewFromHash=()=>({"#stock":"stock","#stats":"stats","#compte":"compte","#publier":"publier","#accueil":"accueil","#connexion":"connexion"})[location.hash]||(session?"publier":"accueil");
 document.addEventListener("click",e=>{const a=e.target.closest('a[href="#comment"]');if(a){e.preventDefault();$("#comment").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}});
 window.addEventListener("hashchange",()=>showView(viewFromHash()));
 
@@ -1880,6 +2258,9 @@ showView(viewFromHash());renderStock();
     if(local.length){try{for(const it of local)await col.doc(it.id).set(it);localStorage.removeItem("ts-items")}catch(e){}}
   }catch(e){}
 })();
+</script>
+<script>
+if("serviceWorker" in navigator&&location.protocol!=="file:"&&!window.claude)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
 </html>

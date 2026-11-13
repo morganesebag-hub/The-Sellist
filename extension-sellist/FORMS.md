@@ -34,10 +34,16 @@ Read only: nothing was saved or published.
 - `#/photos`: `input#file_upload` (multiple, jpeg/png, min 900×900), plus slot inputs `#newPic0..2`.
 - `#/description`: `textarea#description` (+ optional dimensions). `#/price`: `input#priceField`.
 
-## Leboncoin: https://www.leboncoin.fr/deposer-une-annonce (multi-step)
-- Step 1: title `input[name="subject"]` (200 chars). After typing, it suggests categories
-  ("Mode > Vêtements", …) plus "Ou choisissez une autre catégorie".
-- Later steps (photos, description, price, attributes, location, contact) not read.
+## Leboncoin (filled by leboncoin.js, read 2026-11-13)
+- Step 1 https://www.leboncoin.fr/deposer-une-annonce: title `input[name="subject"]`; after typing, suggested
+  categories are buttons with aria-label "Choix N : catégorie X dans la famille Y" (clothes: Mode > Vêtements).
+  Choosing one moves straight to step 2.
+- Step 2: photos `input[type=file]` (image/*, multiple, up to 20) + comboboxes `input[role=combobox]` with
+  `#<id>-toggle-button` and `#<id>-menu li[role=option]`: Univers, Taille ("38 - M"), Type de vêtement,
+  Marque ("Sezane"), Couleur ("Bleu / Ciel"), État (Neuf avec étiquette / Neuf sans étiquette / Très bon état /
+  Bon état / État satisfaisant). Leboncoin pre-fills most of them from the title.
+- Step 3 (recap, then publish): `textarea[name="body"]` (Leboncoin writes its own AI text), `input[name="price_cents"]`
+  (shows a recommended range), address combobox `location`. Not read beyond this page.
 
 ## eBay: https://www.ebay.fr/sl/prelist/suggest (multi-step)
 - Step 1: keyword box "Dites-nous ce que vous vendez" + "Rechercher".

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "The Sellist · Publier",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Remplit tes annonces Vinted, Leboncoin et Vestiaire Collective depuis The Sellist. Tu vérifies, tu publies.",
   "icons": {
     "16": "icons/icon-16.png",
@@ -60,6 +60,7 @@
         "https://*.leboncoin.fr/*"
       ],
       "js": [
+        "leboncoin.js",
         "filler.js"
       ],
       "run_at": "document_idle"

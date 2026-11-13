@@ -124,24 +124,14 @@ window.SellistVestiaire = (() => {
     }
   }
 
-  // price: Vestiaire pre-fills its own suggested price, so replace it once with the seller's
-  function price(job, done) {
-    const p = document.getElementById("priceField");
-    if (!p || done.v3 || job.prix === "" || job.prix == null) return;
-    done.v3 = true;
-    setInput(p, String(job.prix));
-    p.dispatchEvent(new Event("change", { bubbles: true }));
-    p.blur();
-    done.prix = true;
-  }
-
+  // price: Vestiaire pre-fills its own suggested price. Morgane's choice: keep it
+  // (the seller sees their own price in the panel and can change it).
   async function tick(job, done) {
     const f = job.fiche || {};
     // past step 1 the brand is already chosen (shown at the top of the steps)
     if (/submit-an-item/.test(location.pathname) && f.marque) done.marque = true;
     try { await step1(f, done); } catch (e) {}
     try { await details(f, done); } catch (e) {}
-    try { price(job, done); } catch (e) {}
   }
   return { tick };
 })();

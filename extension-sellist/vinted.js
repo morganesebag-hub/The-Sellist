@@ -96,7 +96,7 @@ window.SellistVinted = (() => {
         if (o) { press(o); await wait(400); await closeMenu(key); return true; }
       }
       const order = /^\d/.test(t) ? ["FR", "EU", "IT", "UK", "US"] : ["S/M/L", "UK", "US"];
-      for (const name of [null, ...order]) {
+      for (const name of [...order, null]) {
         if (name) { const b = tab(name); if (!b) continue; press(b); await wait(400); }
         const o = options(c).find((e) => clean(e) === t);
         if (o) { press(o); await wait(400); await closeMenu(key); return true; }
@@ -144,7 +144,8 @@ window.SellistVinted = (() => {
     step();
     if (f.categorie || f.titre) done.categorie = await category(f); step();
     if (done.categorie) {
-      done.marque = await brand(f.marque); step();
+      await wait(800); // let the new fields settle before opening their menus
+      done.marque = await brand(f.marque) || (await wait(1000), await brand(f.marque)); step();
       done.taille = await size(f.taille); step();
       done.etat = await condition(f.etat); step();
       done.couleur = await multi("color-select-dropdown", f.couleur, 2); step();

@@ -59,9 +59,15 @@
 
   async function fillPhotos() {
     if (done.photos || !(job.photos || []).length) return;
-    // the listing's own photo input, never the header's "search by image"
+    // the listing's own photo input: never the header's "search by image",
+    // never a receipt / invoice / proof upload (they accept PDFs or say so)
+    const around = (i) => norm((i.closest("section, fieldset, form, [class*=upload], div") || i.parentElement || i).textContent || "").slice(0, 400);
     const input = document.querySelector('[data-testid="add-photos-input"]') ||
-      [...document.querySelectorAll('input[type=file]')].find((i) => !i.closest("header, nav, [role=search]") && !/search|recherche/i.test(i.id + i.name + (i.getAttribute("data-testid") || "")) && (!i.accept || /image/.test(i.accept)));
+      [...document.querySelectorAll('input[type=file]')].find((i) =>
+        !i.closest("header, nav, [role=search]") &&
+        !/search|recherche|receipt|invoice|proof/i.test(i.id + i.name + (i.getAttribute("data-testid") || "")) &&
+        i.accept && /image/.test(i.accept) && !/pdf|application/.test(i.accept) &&
+        !/facture|recu|preuve|authenticit|justificatif/.test(around(i)));
     if (!input) return;
     done.photos = true;
     try {
@@ -140,6 +146,8 @@
   if (vinted) {
     // Vinted: one pass that fills the whole form, menus included
     running = true; refreshPanel();
+    // the photo input appears once Vinted's page has loaded: wait for it
+    for (let t = 0; t < 10000 && !document.querySelector('[data-testid="add-photos-input"]'); t += 200) await new Promise((r) => setTimeout(r, 200));
     await fillPhotos();
     try { await window.SellistVinted.run(job, done, values, refreshPanel); } catch (e) {}
     running = false; refreshPanel();

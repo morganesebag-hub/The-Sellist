@@ -100,7 +100,7 @@
       ? [["Catégorie", f.categorie || f.titre, "categorie"], ["Marque", f.marque, "marque"], ["Taille", f.taille, "taille"],
          ["État", f.etat, "etat"], ["Couleur", f.couleur, "couleur"], ["Matière", f.matiere, "matiere"]]
       : champs.map((c) => [c.label, c.valeur, null]))
-  ].filter((r) => r[1]);
+  ].filter((r) => r[1] && !(vestiaire && r[2] === "titre")); // Vestiaire has no title field
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   root.innerHTML = `<style>
     :host{all:initial}

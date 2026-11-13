@@ -65,12 +65,14 @@ window.SellistLeboncoin = (() => {
     }
   }
 
-  // step 3: our description (it carries the seller's notes) and price
+  // step 3: Leboncoin writes its own description: Morgane's choice is to keep it
+  // (ours only goes in if theirs is empty). Then the price.
   function recap(job, done) {
     const body = document.querySelector('textarea[name="body"]');
     if (!body || done.l3) return;
     done.l3 = true;
-    if (job.description) { setValue(body, job.description); done.description = true; }
+    if (!body.value.trim() && job.description) { setValue(body, job.description); }
+    done.description = true;
     const price = document.querySelector('input[name="price_cents"]');
     if (price && !price.value && job.prix !== "" && job.prix != null) { setValue(price, String(job.prix)); done.prix = true; }
   }

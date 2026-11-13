@@ -42,7 +42,7 @@ Read only: nothing was saved or published.
   `#<id>-toggle-button` and `#<id>-menu li[role=option]`: Univers, Taille ("38 - M"), Type de vêtement,
   Marque ("Sezane"), Couleur ("Bleu / Ciel"), État (Neuf avec étiquette / Neuf sans étiquette / Très bon état /
   Bon état / État satisfaisant). Leboncoin pre-fills most of them from the title.
-- Step 3 (recap, then publish): `textarea[name="body"]` (Leboncoin writes its own AI text), `input[name="price_cents"]`
+- Step 3 (recap, then publish): `textarea[name="body"]` (Leboncoin writes its own AI text, kept as is), `input[name="price_cents"]`
   (shows a recommended range), address combobox `location`. Not read beyond this page.
 
 ## eBay: https://www.ebay.fr/sl/prelist/suggest (multi-step)

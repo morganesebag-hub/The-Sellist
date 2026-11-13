@@ -1,12 +1,18 @@
 // Opens the marketplace in a new tab and keeps the listing for that tab until
-// the page there asks for it. Listings stay in this browser's session storage
-// and are deleted once used.
+// the page there asks for it. Listings stay in this browser only and are
+// deleted once the tab is closed, the panel is closed, or after 30 minutes.
 const SITES = {
   vinted: "https://www.vinted.fr/items/new",
-  vestiaire: "https://fr.vestiairecollective.com/",
   leboncoin: "https://www.leboncoin.fr/deposer-une-annonce",
-  ebay: "https://www.ebay.fr/sl/sell"
+  vestiaire: "https://fr.vestiairecollective.com/sell-clothes-online/"
 };
+const MAX_AGE = 30 * 60 * 1000;
+
+async function cleanOld() {
+  const all = await chrome.storage.local.get(null);
+  const old = Object.keys(all).filter((k) => k.startsWith("job:") && Date.now() - (all[k].at || 0) > MAX_AGE);
+  if (old.length) await chrome.storage.local.remove(old);
+}
 
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (msg.type === "FILL") {
@@ -15,26 +21,26 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     if (!url) { reply({ ok: false, error: "Site non pris en charge." }); return; }
     chrome.tabs.create({ url }, async (tab) => {
       try {
-        await chrome.storage.session.set({ ["job:" + tab.id]: { ...job, at: Date.now() } });
+        await cleanOld();
+        await chrome.storage.local.set({ ["job:" + tab.id]: { ...job, at: Date.now() } });
         reply({ ok: true });
       } catch (e) {
-        reply({ ok: false, error: "Trop de photos d’un coup. Essaie avec moins de photos." });
+        reply({ ok: false, error: "Impossible de préparer l’annonce. Essaie avec moins de photos." });
       }
     });
     return true; // async reply
   }
   if (msg.type === "GET_JOB") {
     const key = "job:" + (sender.tab && sender.tab.id);
-    chrome.storage.session.get(key).then((r) => {
+    chrome.storage.local.get(key).then((r) => {
       const job = r[key];
-      // jobs older than 30 minutes are dropped
-      reply(job && Date.now() - job.at < 30 * 60 * 1000 ? job : null);
+      reply(job && Date.now() - job.at < MAX_AGE ? job : null);
     });
     return true;
   }
   if (msg.type === "DONE_JOB") {
-    chrome.storage.session.remove("job:" + (sender.tab && sender.tab.id));
+    chrome.storage.local.remove("job:" + (sender.tab && sender.tab.id));
   }
 });
 
-chrome.tabs.onRemoved.addListener((tabId) => chrome.storage.session.remove("job:" + tabId));
+chrome.tabs.onRemoved.addListener((tabId) => chrome.storage.local.remove("job:" + tabId));

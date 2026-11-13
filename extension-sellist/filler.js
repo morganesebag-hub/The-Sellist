@@ -1,4 +1,4 @@
-// Runs on Vinted, Vestiaire Collective, Leboncoin and eBay. If The Sellist opened
+// Runs on Vinted, Vestiaire Collective and Leboncoin. If The Sellist opened
 // this tab with a listing, it fills the fields it recognises (title, description,
 // price, photos) as they appear, and shows a small panel to copy everything else.
 // It never clicks "Publier" and never reads anything else on the page.
@@ -59,7 +59,9 @@
 
   async function fillPhotos() {
     if (done.photos || !(job.photos || []).length) return;
-    const input = [...document.querySelectorAll('input[type=file]')].find((i) => !i.accept || /image/.test(i.accept));
+    // the listing's own photo input, never the header's "search by image"
+    const input = document.querySelector('[data-testid="add-photos-input"]') ||
+      [...document.querySelectorAll('input[type=file]')].find((i) => !i.closest("header, nav, [role=search]") && !/search|recherche/i.test(i.id + i.name + (i.getAttribute("data-testid") || "")) && (!i.accept || /image/.test(i.accept)));
     if (!input) return;
     done.photos = true;
     try {
@@ -80,12 +82,17 @@
   const host = document.createElement("div");
   host.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:2147483647";
   const root = host.attachShadow({ mode: "closed" });
+  const vinted = !!window.SellistVinted && /(^|\.)vinted\./.test(location.hostname) && /\/items\/new/.test(location.pathname);
+  const f = job.fiche || {};
   const champs = (job.champs || []).filter((c) => c && c.valeur);
   const rows = [
     ["Titre", values.titre, "titre"],
     ["Description", values.description, "description"],
     ["Prix", values.prix ? values.prix + " €" : "", "prix"],
-    ...champs.map((c) => [c.label, c.valeur, null])
+    ...(vinted
+      ? [["Catégorie", f.categorie || f.titre, "categorie"], ["Marque", f.marque, "marque"], ["Taille", f.taille, "taille"],
+         ["État", f.etat, "etat"], ["Couleur", f.couleur, "couleur"], ["Matière", f.matiere, "matiere"]]
+      : champs.map((c) => [c.label, c.valeur, null]))
   ].filter((r) => r[1]);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   root.innerHTML = `<style>
@@ -110,7 +117,7 @@
     <div class="f">Vérifie tout, puis clique toi-même sur « Publier ». Rien n’est publié sans toi.</div>
   </div>`;
   document.documentElement.appendChild(host);
-  root.querySelector(".x").addEventListener("click", () => { host.remove(); chrome.runtime.sendMessage({ type: "DONE_JOB" }); stop(); });
+  root.querySelector(".x").addEventListener("click", () => { host.remove(); chrome.runtime.sendMessage({ type: "DONE_JOB" }); try { stop(); } catch (e) {} });
   root.querySelectorAll("button.c").forEach((b) => b.addEventListener("click", async () => {
     const r = rows[+b.dataset.i];
     const v = r[2] === "prix" ? values.prix : r[1];
@@ -118,13 +125,28 @@
   }));
   function refreshPanel() {
     root.querySelectorAll("[data-ok]").forEach((el) => { const k = el.dataset.ok; el.textContent = k && done[k] ? "· rempli" : ""; });
-    const n = ["titre", "description", "prix"].filter((k) => done[k]).length + (done.photos ? 1 : 0);
-    root.getElementById("st").textContent = n
-      ? `${n} élément${n > 1 ? "s" : ""} rempli${n > 1 ? "s" : ""}${done.photos ? ", photos comprises" : ""}. Pour le reste, copie et colle.`
+    const keys = ["titre", "description", "prix", "categorie", "marque", "taille", "etat", "couleur", "matiere"];
+    const n = keys.filter((k) => done[k]).length + (done.photos ? 1 : 0);
+    const missing = rows.filter((r) => r[2] && !done[r[2]]).map((r) => r[0].toLowerCase());
+    root.getElementById("st").textContent = vinted
+      ? (running ? "On remplit l’annonce… ne touche à rien quelques secondes."
+        : missing.length ? `C’est rempli${done.photos ? ", photos comprises" : ""}. À compléter toi-même : ${missing.join(", ")}.`
+        : `Tout est rempli${done.photos ? ", photos comprises" : ""}. Vérifie, puis clique sur « Ajouter ».`)
+      : n ? `${n} élément${n > 1 ? "s" : ""} rempli${n > 1 ? "s" : ""}${done.photos ? ", photos comprises" : ""}. Pour le reste, copie et colle.`
       : "On remplit ce qu’on reconnaît au fil des étapes. En attendant, copie et colle.";
   }
 
-  // Forms on these sites appear step by step: keep looking for 3 minutes.
+  let running = false;
+  if (vinted) {
+    // Vinted: one pass that fills the whole form, menus included
+    running = true; refreshPanel();
+    await fillPhotos();
+    try { await window.SellistVinted.run(job, done, values, refreshPanel); } catch (e) {}
+    running = false; refreshPanel();
+    return;
+  }
+
+  // Other sites: forms appear step by step, keep looking for 3 minutes.
   const tick = async () => { fillFields(); await fillPhotos(); refreshPanel(); };
   const obs = new MutationObserver(() => { clearTimeout(tick.t); tick.t = setTimeout(tick, 400); });
   obs.observe(document.documentElement, { childList: true, subtree: true });

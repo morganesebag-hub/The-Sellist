@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "The Sellist · Publier",
-  "version": "0.1.0",
-  "description": "Remplit tes annonces Vinted, Vestiaire Collective, Leboncoin et eBay depuis The Sellist. Tu vérifies, tu publies.",
+  "version": "0.2.0",
+  "description": "Remplit tes annonces Vinted, Leboncoin et Vestiaire Collective depuis The Sellist. Tu vérifies, tu publies.",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -16,8 +16,13 @@
       "32": "icons/icon-32.png"
     }
   },
-  "background": { "service_worker": "background.js" },
-  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "unlimitedStorage"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -25,17 +30,29 @@
         "http://localhost/*",
         "http://127.0.0.1/*"
       ],
-      "js": ["bridge.js"],
+      "js": [
+        "bridge.js"
+      ],
       "run_at": "document_start"
     },
     {
       "matches": [
-        "https://*.vinted.fr/*",
-        "https://*.vestiairecollective.com/*",
-        "https://*.leboncoin.fr/*",
-        "https://*.ebay.fr/*"
+        "https://*.vinted.fr/*"
       ],
-      "js": ["filler.js"],
+      "js": [
+        "vinted.js",
+        "filler.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://*.vestiairecollective.com/*",
+        "https://*.leboncoin.fr/*"
+      ],
+      "js": [
+        "filler.js"
+      ],
       "run_at": "document_idle"
     }
   ]

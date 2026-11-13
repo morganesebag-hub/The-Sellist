@@ -22,11 +22,17 @@ Read only: nothing was saved or published.
 - Buttons: `upload-form-save-draft-button`, `upload-form-save-button` ("Ajouter" = publish). Never click.
 - Menus open on real clicks; a plain `element.click()` from script did not open them.
 
-## Vestiaire Collective: https://fr.vestiairecollective.com/sell-clothes-online/ (multi-step)
-- Step 1: universe radios `name="universe"` (Mode femme / homme / fille / garçon),
-  category native `<select id="preductAddCategory">` (48 types: Sacs à main, Vestes, Jeans, Robes…),
-  brand text input `[data-testid="deposit-form-brands-input"]` with a clickable brand list.
-- Later steps not read: continuing creates a listing draft on the account.
+## Vestiaire Collective (filled by vestiaire.js, read 2026-11-13)
+- Step 1 https://fr.vestiairecollective.com/sell-clothes-online/: universe radios `name="universe"`,
+  `<select id="preductAddCategory">` (48 types), brand `#depositForm__form__brands-input` + result buttons
+  `[class*=optionsList__item]`. "Continuer" (`#vc-preduct-add-submit`) creates a draft: left to the seller.
+- Drafts: /sell-clothes-online/product-drafts, each opens submit-an-item.shtml?id=<draft>.
+- `#/informations`: comboboxes `#subcategory` `#material` `#color` `#pattern` (type to filter, options
+  `#<id>-listbox [role=option]`), condition `#condition` (role=button, `#condition-listbox`:
+  Jamais porté avec étiquette / Jamais porté / Très bon état / Bon état / Correct),
+  size norm `<select>` (FR/UK/US/IT/International…) then `<select id="size">`. Invoice upload `#product-form-bill-7` (never use).
+- `#/photos`: `input#file_upload` (multiple, jpeg/png, min 900×900), plus slot inputs `#newPic0..2`.
+- `#/description`: `textarea#description` (+ optional dimensions). `#/price`: `input#priceField`.
 
 ## Leboncoin: https://www.leboncoin.fr/deposer-une-annonce (multi-step)
 - Step 1: title `input[name="subject"]` (200 chars). After typing, it suggests categories

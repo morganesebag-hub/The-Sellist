@@ -1,6 +1,6 @@
 # The Sellist · Publier (Morgane's extension)
 
-Separate from `extension/` (Lucie's). Fills listings on Vinted, Leboncoin and Vestiaire Collective from the web app. Vinted is filled completely (vinted.js); the others get title, description, price and photos for now.
+Separate from `extension/` (Lucie's). Fills listings on Vinted, Leboncoin and Vestiaire Collective from the web app. Vinted is filled completely (vinted.js), Vestiaire step by step (vestiaire.js); Leboncoin gets title, description, price and photos for now.
 
 - `bridge.js` runs on the web app (morganesebag-hub.github.io, localhost). It sets `data-sellist-app` on `<html>` and relays `{source:"sellist-app", type:"FILL", job}` to the background.
 - `background.js` opens the site in a new tab and keeps the job in `chrome.storage.local` for that tab (deleted when the tab closes, 30 min max).

@@ -89,13 +89,14 @@
   host.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:2147483647";
   const root = host.attachShadow({ mode: "closed" });
   const vinted = !!window.SellistVinted && /(^|\.)vinted\./.test(location.hostname) && /\/items\/new/.test(location.pathname);
+  const vestiaire = !!window.SellistVestiaire && /vestiairecollective\./.test(location.hostname);
   const f = job.fiche || {};
   const champs = (job.champs || []).filter((c) => c && c.valeur);
   const rows = [
     ["Titre", values.titre, "titre"],
     ["Description", values.description, "description"],
     ["Prix", values.prix ? values.prix + " €" : "", "prix"],
-    ...(vinted
+    ...(vinted || vestiaire
       ? [["Catégorie", f.categorie || f.titre, "categorie"], ["Marque", f.marque, "marque"], ["Taille", f.taille, "taille"],
          ["État", f.etat, "etat"], ["Couleur", f.couleur, "couleur"], ["Matière", f.matiere, "matiere"]]
       : champs.map((c) => [c.label, c.valeur, null]))
@@ -138,6 +139,7 @@
       ? (running ? "On remplit l’annonce… ne touche à rien quelques secondes."
         : missing.length ? `C’est rempli${done.photos ? ", photos comprises" : ""}. À compléter toi-même : ${missing.join(", ")}.`
         : `Tout est rempli${done.photos ? ", photos comprises" : ""}. Vérifie, puis clique sur « Ajouter ».`)
+      : vestiaire ? `On remplit chaque étape dès qu’elle s’affiche${n ? ` (${n} élément${n > 1 ? "s" : ""} rempli${n > 1 ? "s" : ""}${done.photos ? ", photos comprises" : ""})` : ""}. Vérifie, puis clique sur « Continuer ».`
       : n ? `${n} élément${n > 1 ? "s" : ""} rempli${n > 1 ? "s" : ""}${done.photos ? ", photos comprises" : ""}. Pour le reste, copie et colle.`
       : "On remplit ce qu’on reconnaît au fil des étapes. En attendant, copie et colle.";
   }
@@ -154,11 +156,22 @@
     return;
   }
 
-  // Other sites: forms appear step by step, keep looking for 3 minutes.
-  const tick = async () => { fillFields(); await fillPhotos(); refreshPanel(); };
-  const obs = new MutationObserver(() => { clearTimeout(tick.t); tick.t = setTimeout(tick, 400); });
+  // Other sites: forms appear step by step, keep looking for 15 minutes.
+  let busy = false;
+  const tick = async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      if (vestiaire) await window.SellistVestiaire.tick(job, done);
+      fillFields(); await fillPhotos(); refreshPanel();
+    } finally { busy = false; }
+  };
+  const obs = new MutationObserver((muts) => {
+    if (muts.every((m) => host.contains(m.target))) return; // our own panel
+    clearTimeout(tick.t); tick.t = setTimeout(tick, 600);
+  });
   obs.observe(document.documentElement, { childList: true, subtree: true });
-  const timer = setTimeout(() => obs.disconnect(), 3 * 60 * 1000);
+  const timer = setTimeout(() => obs.disconnect(), 15 * 60 * 1000);
   function stop() { obs.disconnect(); clearTimeout(timer); }
   tick();
 })();

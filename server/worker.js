@@ -8,7 +8,8 @@
 //   MODEL              (texte)   ex. claude-sonnet-5-5, claude-haiku-5-5 ou claude-opus-5-5
 //   CODES              (secret)  les codes testeuses, séparés par des virgules
 //   LIMIT              (texte)   articles par testeuse (10 par défaut)
-//   SHEET_URL          (texte, facultatif) adresse du Google Sheet de suivi (étape suivante)
+//   SHEET_URL          (texte, facultatif) adresse du script du Google Sheet de suivi
+//   SHEET_TOKEN        (secret, facultatif) mot de passe partagé avec ce script
 // Stockage (Worker > Settings > Bindings) : un espace KV nommé QUOTAS.
 //
 // Le site envoie : POST /statut /analyse /annonces /interet  (voir index.html)
@@ -37,7 +38,10 @@ export default {
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method !== "POST") return reply({ erreur: "methode" }, 405);
-    if (!ALLOWED_ORIGINS.includes(origin)) return reply({ erreur: "origine" }, 403);
+    const path = new URL(request.url).pathname.replace(/\/+$/, "");
+    // the extension only reports "annonce publiée" (from its own origin)
+    const fromExtension = origin.startsWith("chrome-extension://") && path === "/evenement";
+    if (!ALLOWED_ORIGINS.includes(origin) && !fromExtension) return reply({ erreur: "origine" }, 403);
     if (Number(request.headers.get("Content-Length") || 0) > MAX_BODY) return reply({ erreur: "trop_gros" }, 413);
 
     let body;
@@ -47,9 +51,8 @@ export default {
     const codes = String(env.CODES || "").split(",").map((c) => c.trim().toUpperCase()).filter(Boolean);
     if (!code || !codes.includes(code)) return reply({ erreur: "code" }, 403);
 
-    const path = new URL(request.url).pathname.replace(/\/+$/, "");
     const quota = await readQuota(env, code);
-    const log = (action, detail) => ctx.waitUntil(sendToSheet(env, { code, action, detail }));
+    const log = (action, detail, extra = {}) => ctx.waitUntil(sendToSheet(env, { code, action, detail, ...extra }));
 
     try {
       if (path === "/statut") {
@@ -77,7 +80,7 @@ export default {
 
       if (path === "/interet") {
         const r = body.reponse === "oui" ? "oui" : "non";
-        log("intérêt pour 30 articles de plus", r);
+        log("intérêt 30 articles", r);
         return reply({ ok: true });
       }
 
@@ -85,7 +88,9 @@ export default {
         // remplissage lancé, etc. : uniquement pour le suivi
         const action = String(body.action || "").slice(0, 60);
         const detail = String(body.detail || "").slice(0, 200);
-        if (action) log(action, detail);
+        const site = String(body.site || "").slice(0, 40);
+        const secondes = Number(body.secondes) > 0 ? Math.round(Number(body.secondes)) : "";
+        if (action) log(action, detail, { site, secondes });
         return reply({ ok: true });
       }
 
@@ -119,7 +124,7 @@ async function sendToSheet(env, row) {
     await fetch(env.SHEET_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date: new Date().toISOString(), ...row })
+      body: JSON.stringify({ token: env.SHEET_TOKEN || "", date: new Date().toISOString(), ...row })
     });
   } catch (e) {}
 }

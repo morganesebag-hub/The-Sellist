@@ -257,6 +257,7 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");cl
 let photos=[];            // {key, blob, url}
 let article=uid();        // identifiant envoyé au serveur (une analyse = un article)
 let analysed=false;       // l'IA a déjà regardé cet article
+let startedAt=0;          // premier ajout de photos de cet article (pour mesurer le temps gagné)
 let aiAnnonces=null, aiFicheSnap=null;  // annonces de l'IA et fiche au moment où elle les a écrites
 let quota={restants:null,limite:LIMIT};
 
@@ -352,6 +353,7 @@ async function addFiles(list){
   const room=MAX_PHOTOS-photos.length;if(room<=0){toast(`${MAX_PHOTOS} photos maximum.`);return}
   for(const f of files.slice(0,room)){const blob=await shrink(f,1600,.85);photos.push({key:uid(),blob,url:URL.createObjectURL(blob)})}
   if(files.length>room)toast(`On a gardé les ${room} premières : ${MAX_PHOTOS} maximum.`);
+  if(!startedAt)startedAt=Date.now();
   renderPhotos();showSteps();
   if(!analysed)analyse();
 }
@@ -476,10 +478,13 @@ $("#fillBtn").addEventListener("click",async()=>{
     const imgs=[];for(const ph of photos.slice(0,MAX_PHOTOS))imgs.push(await toDataUrl(await shrink(ph.blob,1280,.82)));
     for(const id of ids){
       window.postMessage({source:"sellist-app",type:"FILL",id:uid(),job:{site:id,url:SITES[id].url,fiche:{...d,prix:Math.round(prix)},
-        titre:ann[id].titre,description:ann[id].description,prix:Math.round(prix),champs:[],photos:imgs}},"*");
+        titre:ann[id].titre,description:ann[id].description,prix:Math.round(prix),champs:[],photos:imgs,
+        code:API_URL?code():"",api:API_URL}},"*");
       await wait(400);
     }
     $("#after").classList.remove("hidden");
+    if(API_URL&&code())api("evenement",{action:"remplissage lancé",site:ids.map(id=>SITES[id].name.replace("Vestiaire Collective","Vestiaire")).join(", "),
+      secondes:startedAt?Math.round((Date.now()-startedAt)/1000):""}).catch(()=>{});
     toast(ids.length>1?"Les onglets s’ouvrent. Vérifie chaque annonce, puis publie.":"L’onglet s’ouvre. Vérifie l’annonce, puis publie.");
   }catch(e){toast("Impossible de préparer tes photos. Réessaie.")}
   finally{btn.disabled=false;btn.textContent=label}
@@ -488,7 +493,7 @@ $("#prix").addEventListener("input",()=>$("#prix").classList.remove("miss"));
 
 /* ---------- article suivant ---------- */
 $("#nextBtn").addEventListener("click",()=>{
-  photos.forEach(p=>URL.revokeObjectURL(p.url));photos=[];article=uid();analysed=false;aiAnnonces=null;aiFicheSnap=null;edited={};
+  photos.forEach(p=>URL.revokeObjectURL(p.url));photos=[];article=uid();analysed=false;startedAt=0;aiAnnonces=null;aiFicheSnap=null;edited={};
   FIELDS.forEach(f=>{$("#"+f).value=""});$("#etat").value="Très bon état";$("#texts").open=false;
   $("#after").classList.add("hidden");$("#stepFiche").classList.add("hidden");$("#stepPub").classList.add("hidden");
   renderPhotos();aiStatus("");scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});

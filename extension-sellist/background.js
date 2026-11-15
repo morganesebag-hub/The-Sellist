@@ -38,6 +38,22 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     });
     return true;
   }
+  if (msg.type === "PUBLISHED") {
+    const key = "job:" + (sender.tab && sender.tab.id);
+    chrome.storage.local.get(key).then(async (r) => {
+      const job = r[key];
+      if (!job || !job.api || !job.code || (job.publies || []).includes(msg.site)) return;
+      job.publies = [...(job.publies || []), msg.site];
+      await chrome.storage.local.set({ [key]: job });
+      try {
+        await fetch(job.api.replace(/\/$/, "") + "/evenement", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: job.code, action: "annonce publiée", site: msg.site, detail: "" })
+        });
+      } catch (e) {}
+    });
+    return;
+  }
   if (msg.type === "DONE_JOB") {
     chrome.storage.local.remove("job:" + (sender.tab && sender.tab.id));
   }

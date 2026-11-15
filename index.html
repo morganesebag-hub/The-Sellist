@@ -229,7 +229,7 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
      POST {API_URL}/interet  {code, reponse:"oui"|"non"}    → {ok}
      erreurs : {erreur:"code"} code inconnu, {erreur:"limite"} limite atteinte
    ===================================================================== */
-const API_URL = "";          // rempli à l'étape 2 (adresse du serveur Cloudflare)
+const API_URL = "https://the-sellist-ia.morgane-sebag.workers.dev"; // serveur IA (Cloudflare), voir server/worker.js
 const LIMIT = 10;            // articles par testeuse
 const DEMO = new URLSearchParams(location.search).has("demo");
 const SITES = {

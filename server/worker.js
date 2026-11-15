@@ -147,7 +147,7 @@ const STYLE = `Consignes par site (les annonces s'adressent aux acheteurs, en fr
 - vinted : marque, taille, état, couleur et matière ont leurs propres champs, la description ne les répète pas en liste. Elle est courte et directe (ce qui rend l'article désirable, détails, défauts), avec 3 à 5 mots-clés en fin précédés de #. Titre court : type d'article et marque.
 - leboncoin : titre clair avec le type d'article et l'élément clé (marque, taille). Description informative et complète (état, taille, défauts, envoi ou remise en main propre), car les acheteurs y lisent tout.
 - vestiaire : description soignée et sans superlatifs creux, qui décrit la coupe ou le modèle, les détails et l'état précis.
-N'invente aucune information absente (ni mesure, ni matière, ni défaut). Mentionne honnêtement les défauts connus.`;
+N'invente aucune information absente de la fiche : ni mesure, ni matière, ni coupe, ni défaut, ni précision sur un défaut (où il se voit, sa taille, s'il part au lavage…), ni promesse de photos supplémentaires. Reprends les défauts connus tels qu'ils sont écrits, sans les minimiser ni les détailler davantage.`;
 
 async function callClaude(env, content, schema) {
   if (!env.ANTHROPIC_API_KEY || !env.MODEL) throw new Error("réglages manquants (clé ou modèle)");
@@ -184,7 +184,7 @@ async function analyse(env, images) {
 - couleur : la couleur principale en un ou deux mots (ex. "Bleu").
 - matiere : la matière principale en un mot si l'étiquette la montre (ex. "Coton").
 - etat : une valeur parmi ${ETATS.join(", ")}, ou vide si impossible à juger.
-- notes : défauts ou détails visibles en une ou deux phrases, ou vide.
+- notes : défauts ou détails visibles SUR L'ARTICLE en une ou deux phrases, ou vide. Jamais de remarque sur les photos elles-mêmes (ce qui est visible ou pas, leur qualité) : ce texte va dans l'annonce.
 2) Rédige ensuite une annonce pour chacun des 3 sites, à partir de la fiche uniquement.
 ${STYLE}` }
   ];

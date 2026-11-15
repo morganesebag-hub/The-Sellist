@@ -389,7 +389,7 @@ async function analyse(){
   analysed=true;$("#fiche").classList.add("busy");
   aiStatus(`<span class="spin" aria-hidden="true"></span> L’IA regarde tes photos et remplit ta fiche…`);
   try{
-    const imgs=[];for(const ph of photos.slice(0,4))imgs.push((await toDataUrl(await shrink(ph.blob,1024,.8))).split(",")[1]);
+    const imgs=[];for(const ph of photos.slice(0,6))imgs.push((await toDataUrl(await shrink(ph.blob,1024,.8))).split(",")[1]);
     const out=await api("analyse",{article,images:imgs});
     const f=out.fiche||{};
     for(const k of ["titre","marque","categorie","taille","couleur","matiere","notes"]){const v=typeof f[k]==="string"?f[k].trim():"";if(v&&!$("#"+k).value.trim())$("#"+k).value=v}

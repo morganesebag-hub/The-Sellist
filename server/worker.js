@@ -20,7 +20,7 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:3000"
 ];
 const API = "https://api.anthropic.com/v1/messages";
-const MAX_IMAGES = 4;
+const MAX_IMAGES = 6;
 const MAX_BODY = 8 * 1024 * 1024; // 8 Mo
 
 export default {

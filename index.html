@@ -323,19 +323,35 @@ function limitReached(){
   if($(".modal"))return;
   const m=document.createElement("div");m.className="modal";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Limite atteinte");
   const answered=store.get("ts-interet");
-  m.innerHTML=`<div class="modal-card"><h3>Tu as utilisé tes ${quota.limite||LIMIT} articles de test</h3>
+  m.innerHTML=`<form class="modal-card" novalidate><h3>Tu as utilisé tes ${quota.limite||LIMIT} articles de test</h3>
     <p>Merci d’avoir testé The Sellist jusqu’au bout !</p>
     ${answered?`<p>On a bien noté ta réponse. On revient vers toi très vite.</p><div class="row"><button class="btn" type="button" data-r="close">Fermer</button></div>`
-    :`<p>Tu en voudrais plus ?</p>
-    <div class="row"><button class="btn go" type="button" data-r="oui">Oui, 30 articles de plus pour 4,99 € m’intéresseraient</button>
-    <button class="btn" type="button" data-r="non">Non merci</button></div>`}</div>`;
+    :`<p>Bientôt dans The Sellist : <strong>publier plusieurs articles d’un coup</strong>. Tu ajoutes les photos de tout un lot, on crée une fiche par article et on remplit toutes les annonces.</p>
+    <p><strong>Pack Tri : 30 articles pour 4,99 €</strong>, sans abonnement.</p>
+    <p>Ça t’intéresse ? Laisse ton e-mail, on te prévient au lancement.</p>
+    <input id="leadIn" type="email" inputmode="email" autocomplete="email" placeholder="ton@email.fr" aria-label="Ton e-mail">
+    <p class="err" id="leadErr" aria-live="polite"></p>
+    <div class="row"><button class="btn go" type="submit" data-r="oui">Oui, préviens-moi au lancement</button>
+    <button class="btn" type="button" data-r="non">Non merci</button></div>`}</form>`;
   document.body.appendChild(m);
-  m.addEventListener("click",async e=>{
-    const b=e.target.closest("[data-r]");if(!b&&e.target!==m)return;
-    const r=b&&b.dataset.r;
-    if(r==="oui"||r==="non"){store.set("ts-interet",r);try{await api("interet",{reponse:r})}catch(err){}toast(r==="oui"?"Merci, c’est noté !":"Merci pour ta réponse.")}
+  const send=async r=>{
+    let email="";
+    if(r==="oui"){
+      email=$("#leadIn").value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){$("#leadErr").textContent="Indique ton e-mail pour qu’on puisse te prévenir.";$("#leadIn").focus();return}
+    }
+    store.set("ts-interet",r);
+    try{await api("interet",{reponse:r});if(email)await api("evenement",{action:"e-mail pour le lancement",detail:email.slice(0,200)})}catch(err){}
+    toast(r==="oui"?"Merci, on te prévient au lancement !":"Merci pour ta réponse.");
     m.remove();
+  };
+  m.querySelector("form").addEventListener("submit",e=>{e.preventDefault();if(!answered)send("oui")});
+  m.addEventListener("click",e=>{
+    const b=e.target.closest("[data-r]");
+    if(e.target===m||(b&&b.dataset.r==="close")){m.remove();return}
+    if(b&&b.dataset.r==="non")send("non");
   });
+  const f=$("#leadIn");if(f)f.focus();
 }
 
 /* ---------- photos ---------- */

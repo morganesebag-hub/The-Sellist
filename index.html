@@ -116,6 +116,11 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
 .modal-card p{margin:0 0 10px;color:var(--muted);font-size:15px}
 .modal-card .row{display:grid;gap:10px;margin-top:16px}
 .modal-card .err{color:var(--warn);font-size:14px;min-height:1.3em;margin:8px 0 0}
+.consent{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;color:var(--muted);margin:14px 0 0;cursor:pointer}
+.consent input{width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--vert)}
+.consent a{color:var(--encre)}
+.foot{max-width:760px;margin:0 auto;padding:0 16px 32px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--muted)}
 
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--encre);color:var(--lin);padding:11px 18px;border-radius:999px;font-weight:500;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:60}
 .toast.show{opacity:1}
@@ -213,6 +218,7 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
     </div>
   </section>
 </main>
+<footer class="foot">The Sellist · version de test · <a href="confidentialite.html">Confidentialité</a></footer>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -299,13 +305,16 @@ function askCode(){
   m.innerHTML=`<form class="modal-card"><h3>Bienvenue dans le test <em class="serif">The Sellist</em></h3>
     <p>Entre le code testeuse reçu par e-mail. Tu ne le taperas qu’une fois.</p>
     <input id="codeIn" autocomplete="off" autocapitalize="characters" placeholder="Ton code" aria-label="Code testeuse">
+    <label class="consent"><input type="checkbox" id="consentIn"><span>J’ai lu <a href="confidentialite.html" target="_blank" rel="noopener">la page de confidentialité</a> et j’accepte de participer au test.</span></label>
     <p class="err" id="codeErr" aria-live="polite"></p>
     <div class="row"><button class="btn go" type="submit">Commencer</button></div></form>`;
   document.body.appendChild(m);$("#codeIn").focus();
   m.querySelector("form").addEventListener("submit",async e=>{
     e.preventDefault();const v=$("#codeIn").value.trim().toUpperCase();if(!v)return;
+    if(!$("#consentIn").checked){$("#codeErr").textContent="Coche la case pour accepter de participer au test.";return}
     store.set("ts-code",v);$("#codeErr").textContent="On vérifie…";
-    try{const s=await api("statut",{});quota={restants:s.restants,limite:s.limite||LIMIT};renderQuota();m.remove()}
+    try{const s=await api("statut",{});quota={restants:s.restants,limite:s.limite||LIMIT};renderQuota();m.remove();
+      store.set("ts-consent",new Date().toISOString());api("evenement",{action:"consentement donné",detail:""}).catch(()=>{})}
     catch(err){store.del("ts-code");$("#codeErr").textContent=err.erreur==="code"?"Ce code n’existe pas. Vérifie l’e-mail reçu.":"Connexion impossible. Réessaie dans un instant."}
   });
 }

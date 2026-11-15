@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F2ED">
+<title>Confidentialité · The Sellist</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffffff'/%3E%3Ctext x='50' y='78' text-anchor='middle' font-family='Helvetica, Arial, sans-serif' font-size='76' fill='%23141414'%3ES%3C/text%3E%3Ctext x='44' y='70' text-anchor='middle' font-family='Georgia, serif' font-style='italic' font-size='72' fill='%231E5A46'%3ET%3C/text%3E%3Ccircle cx='76' cy='80' r='7' fill='%231E5A46'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+:root{--lin:#F5F2ED;--encre:#141414;--vert:#1E5A46;--dot:#1E5A46;--surface:#FFFFFF;--muted:#5E5A53;--line:#D9D3C9;--soft:#EAE5DC;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--dot:#9CCBB4;--lin:#151513;--encre:#F2EEE7;--vert:#6DB397;--surface:#1E1D1A;--muted:#A8A196;--line:#34312C;--soft:#262420;color-scheme:dark}}
+:root[data-theme="dark"]{--dot:#9CCBB4;--lin:#151513;--encre:#F2EEE7;--vert:#6DB397;--surface:#1E1D1A;--muted:#A8A196;--line:#34312C;--soft:#262420;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--lin);color:var(--encre);font:400 16px/1.6 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.bar{border-bottom:1px solid var(--line)}
+.bar-in{max-width:720px;margin:0 auto;padding:12px 16px}
+.wordmark{color:var(--encre);text-decoration:none;display:inline-flex;align-items:baseline;gap:.2em;font-size:26px;line-height:1;padding:.2em 0;white-space:nowrap}
+.wordmark .the{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-size:1.1em}
+.wordmark .sell{font-weight:300;letter-spacing:-.01em}
+.wordmark .sig{width:1.05em;height:1.05em;align-self:center;margin-right:.1em;overflow:visible;flex:none}
+.wordmark .i{position:relative;display:inline-block}
+.wordmark .i::after{content:"";position:absolute;left:50%;top:.07em;width:.17em;height:.17em;border-radius:50%;background:var(--dot);transform:translateX(-50%)}
+main{max-width:720px;margin:0 auto;padding:32px 16px 72px}
+h1{font-size:clamp(2rem,6vw,2.6rem);letter-spacing:-.02em;line-height:1.1;margin:0 0 10px}
+h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:0}
+.lead{color:var(--muted);margin:0 0 28px;max-width:56ch}
+section{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:12px}
+h2{font-size:1.1rem;margin:0 0 6px;letter-spacing:-.01em}
+p{margin:0 0 8px}
+p:last-child,ul:last-child{margin-bottom:0}
+ul{margin:4px 0 8px;padding-left:1.2em}
+li{margin:3px 0}
+a{color:var(--vert)}
+.muted{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+  <a class="wordmark" href="./" aria-label="The Sellist, retour au site"><svg class="sig" viewBox="0 0 100 100" aria-hidden="true"><text x="50" y="78" text-anchor="middle" font-family="DM Sans, sans-serif" font-weight="400" font-size="76" fill="currentColor">S</text><text x="44" y="70" text-anchor="middle" font-family="Instrument Serif, serif" font-style="italic" font-size="72" style="fill:var(--dot)">T</text><circle cx="74" cy="80" r="5.5" style="fill:var(--dot)"/></svg><span class="the">The</span><span class="sell">Sell<span class="i">ı</span>st</span></a>
+</div></header>
+<main>
+  <h1>Tes données, <em>en clair.</em></h1>
+  <p class="lead">The Sellist est en phase de test. Voici ce qu’on collecte pendant ce test, pourquoi, et ce que tu peux demander. Mis à jour le 15 novembre 2026.</p>
+
+  <section>
+    <h2>Qui s’en occupe</h2>
+    <p>Morgane Sebag, qui mène le test de The Sellist. Pour toute question ou demande : <a href="mailto:morgane.sebag@gmail.com">morgane.sebag@gmail.com</a>.</p>
+  </section>
+
+  <section>
+    <h2>Ce qu’on collecte</h2>
+    <ul>
+      <li><strong>Ton code testeuse.</strong> Il remplace un compte. Le serveur ne connaît pas ton nom : seule Morgane sait à qui elle a donné quel code.</li>
+      <li><strong>Ce que tu fais avec The Sellist</strong> : article analysé, remplissage lancé (sur quel site), annonce publiée (sur quel site), avec la date. Jamais le contenu de tes annonces.</li>
+      <li><strong>Ta réponse</strong> si tu atteins la limite de 10 articles et qu’on te demande si tu en voudrais plus.</li>
+    </ul>
+    <p>On ne collecte ni tes mots de passe, ni tes identifiants Vinted, Leboncoin ou Vestiaire Collective, ni tes conversations avec les acheteurs.</p>
+  </section>
+
+  <section>
+    <h2>Tes photos</h2>
+    <p>Quand tu ajoutes des photos, jusqu’à 4 d’entre elles sont envoyées à l’IA Claude, de la société Anthropic, uniquement pour remplir ta fiche et rédiger tes annonces. Notre serveur ne les enregistre pas.</p>
+    <p>Anthropic ne les utilise pas pour entraîner ses modèles et les conserve au maximum 30 jours, pour la sécurité de son service, selon ses conditions d’utilisation.</p>
+    <p>Toutes tes photos restent sur ton ordinateur et partent ensuite sur les sites où tu publies, comme si tu les ajoutais toi-même.</p>
+  </section>
+
+  <section>
+    <h2>L’extension Chrome</h2>
+    <ul>
+      <li>Elle n’agit que sur la page « vendre un article » de Vinted, Leboncoin et Vestiaire Collective, quand tu lances le remplissage depuis The Sellist.</li>
+      <li>Elle garde ton annonce dans ton navigateur le temps de la remplir, puis l’efface (à la fermeture de l’onglet, ou au plus tard après 30 minutes).</li>
+      <li>Elle ne lit pas tes mots de passe et ne clique jamais sur « Publier » à ta place.</li>
+      <li>Quand tu publies, elle signale juste « annonce publiée sur tel site » au serveur, avec ton code.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Pourquoi</h2>
+    <p>Pour faire fonctionner le service (remplir ta fiche, respecter ta limite de 10 articles) et pour comprendre si The Sellist fait vraiment gagner du temps. Rien n’est vendu ni utilisé pour de la publicité.</p>
+  </section>
+
+  <section>
+    <h2>Qui y a accès, et où</h2>
+    <ul>
+      <li>Morgane, dans un tableau privé (Google Sheets).</li>
+      <li>Les prestataires techniques, uniquement pour faire tourner le service : Anthropic (l’IA), Cloudflare (le serveur et le compteur d’articles), Google (le tableau de suivi), GitHub (l’hébergement du site). Certains sont situés hors de l’Union européenne.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Combien de temps</h2>
+    <p>Pendant le test, puis au plus tard 3 mois après la fin du test. Ensuite, tout est supprimé.</p>
+  </section>
+
+  <section>
+    <h2>Tes droits</h2>
+    <p>Tu peux à tout moment demander à voir tes données, les faire corriger ou supprimer, ou arrêter le test, en écrivant à <a href="mailto:morgane.sebag@gmail.com">morgane.sebag@gmail.com</a>. Tu peux aussi contacter la CNIL (cnil.fr) si tu estimes que tes droits ne sont pas respectés.</p>
+    <p class="muted">Participer au test est facultatif. Tu peux aussi effacer les données gardées dans ton navigateur en vidant les données du site.</p>
+  </section>
+</main>
+</body>
+</html>

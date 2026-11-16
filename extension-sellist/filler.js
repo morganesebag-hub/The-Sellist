@@ -108,18 +108,18 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   root.innerHTML = `<style>
     :host{all:initial}
-    .p{width:300px;max-height:70vh;overflow:auto;background:#fff;color:#141414;border:1px solid #D9D3C9;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.18);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
-    .h{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #D9D3C9;position:sticky;top:0;background:#fff}
-    .h b{font-size:15px}.h i{font-family:Georgia,serif;color:#1E5A46}
-    .x{border:0;background:none;font-size:18px;cursor:pointer;color:#5E5A53}
-    .s{padding:10px 14px;color:#5E5A53;font-size:13px;border-bottom:1px solid #EAE5DC}
-    .r{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #EAE5DC}
-    .r div{min-width:0}.r small{display:block;color:#5E5A53;font-size:12px}
+    .p{width:300px;max-height:70vh;overflow:auto;background:#fff;color:#141414;border:1px solid #E3E3DF;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.18);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+    .h{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #E3E3DF;position:sticky;top:0;background:#fff}
+    .h b{font-size:15px}.h i{font-family:Georgia,serif;color:#5B2149}
+    .x{border:0;background:none;font-size:18px;cursor:pointer;color:#5E5A55}
+    .s{padding:10px 14px;color:#5E5A55;font-size:13px;border-bottom:1px solid #EDEDEA}
+    .r{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #EDEDEA}
+    .r div{min-width:0}.r small{display:block;color:#5E5A55;font-size:12px}
     .r span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
-    .ok{color:#1E5A46;font-weight:600;font-size:12px}
-    button.c{flex:none;border:1px solid #D9D3C9;background:#F5F2ED;border-radius:999px;padding:5px 11px;font:500 13px system-ui,sans-serif;cursor:pointer;color:#141414}
-    .f{padding:10px 14px;font-size:12px;color:#5E5A53}
-    @media (prefers-color-scheme:dark){.p,.h{background:#1E1D1A;color:#F2EEE7;border-color:#34312C}.r,.s{border-color:#34312C}button.c{background:#151513;color:#F2EEE7;border-color:#34312C}.h i,.ok{color:#6DB397}}
+    .ok{color:#5B2149;font-weight:600;font-size:12px}
+    button.c{flex:none;border:1px solid #E3E3DF;background:#F5F5F3;border-radius:999px;padding:5px 11px;font:500 13px system-ui,sans-serif;cursor:pointer;color:#141414}
+    .f{padding:10px 14px;font-size:12px;color:#5E5A55}
+    @media (prefers-color-scheme:dark){.p,.h{background:#1E1E1C;color:#F2F0EE;border-color:#33332F}.r,.s{border-color:#33332F}button.c{background:#151514;color:#F2F0EE;border-color:#33332F}.h i,.ok{color:#EDBACD}}
   </style>
   <div class="p" role="dialog" aria-label="The Sellist">
     <div class="h"><b><i>The</i> Sellist</b><button class="x" aria-label="Fermer">×</button></div>

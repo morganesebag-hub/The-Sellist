@@ -60,3 +60,4 @@ Name and description: `extension/manifest.json` (`name`, `description`, max 132 
 - Keep UI copy in French, informal "tu".
 - Design tokens are CSS variables on `:root` (lin, encre, galet, vert) with a dark theme; keep both themes working and keep mobile layouts at 16px gutters.
 - Keep the wordmark SVG and the "Instrument Serif" italic accent on key words.
+- Brand palette (Prune, decided Nov 2026 in the Claude design canvas): backgrounds #F5F5F3 and white, ink #141414, plum #5B2149 only for actions and the dot, powder pink #EDBACD for the T and dot on dark backgrounds, mist #E3E3DF for borders.

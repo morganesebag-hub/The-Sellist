@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "The Sellist · Publier",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Remplit tes annonces Vinted, Leboncoin et Vestiaire Collective depuis The Sellist. Tu vérifies, tu publies.",
   "icons": {
     "16": "icons/icon-16.png",

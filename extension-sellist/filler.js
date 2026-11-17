@@ -9,7 +9,15 @@
   });
   if (!job) return;
   // only on the listing forms, not on the pages shown after publishing
-  if (!/\/items\/new|submit-an-item|proposer-un-article|sell-clothes-online|deposer-une-annonce/.test(location.pathname)) return;
+  if (!/\/items\/new|submit-an-item|proposer-un-article|sell-clothes-online|deposer-une-annonce/.test(location.pathname)) {
+    // A page loaded in this tab after the seller clicked "Ajouter"/"Publier" on the form (some
+    // sites reload the whole page after publishing), or Vinted's own item page: it's online.
+    const site = /vinted\./.test(location.hostname) ? "Vinted" : /vestiairecollective\./.test(location.hostname) ? "Vestiaire" : /leboncoin\./.test(location.hostname) ? "Leboncoin" : "";
+    const afterSubmit = job.submitAt && Date.now() - job.submitAt < 10 * 60 * 1000;
+    if (site && (afterSubmit || (site === "Vinted" && /^\/items\/\d+/.test(location.pathname))))
+      try { chrome.runtime.sendMessage({ type: "PUBLISHED", site }); } catch (e) {}
+    return;
+  }
 
   // ---------- which field is which ----------
   // Matched on the field's label, placeholder, name, id or aria-label (lowercase, no accents).
@@ -160,9 +168,18 @@
     try { chrome.runtime.sendMessage({ type: "PUBLISHED", site: SITE_NAME }); } catch (e) {}
     try { root.getElementById("st").textContent = "Bravo, ton annonce est en ligne !"; } catch (e) {}
   }
+  // Vestiaire shows its confirmation as a step of the same page: #/confirmation
+  const vestiaireDone = () => vestiaire && /confirmation/.test(location.hash);
+  if (vestiaireDone()) published();
+  window.addEventListener("hashchange", () => { if (vestiaireDone()) published(); });
+  // the buttons that publish (not "Continuer", not the draft buttons)
+  // whole label only: "Ajouter" publishes on Vinted, "Ajouter des photos" doesn't
+  const SUBMIT = /^(ajouter|publier( (mon |cette |l.)(annonce|article))?|mettre en (vente|ligne)|soumettre( (mon |l.)(annonce|article))?|d[ée]poser (mon |une |l.)annonce)$/i;
   document.addEventListener("click", (e) => {
     const b = e.target.closest && e.target.closest("button, [role=button], input[type=submit]");
     if (!b || host.contains(b) || reported) return;
+    const text = (b.innerText || b.value || "").trim();
+    if (SUBMIT.test(text) && !/brouillon/i.test(text)) { try { chrome.runtime.sendMessage({ type: "SUBMIT_CLICK" }); } catch (e) {} }
     const startPath = location.pathname;
     clearInterval(watching);
     let t = 0;
@@ -170,8 +187,8 @@
       t += 1;
       const left = location.pathname !== startPath && !FORM_PATH.test(location.pathname);
       const vintedItem = vinted && /^\/items\/\d+/.test(location.pathname);
-      if (left || vintedItem || SUCCESS_TEXT.test((document.querySelector("main") || document.body).innerText.slice(0, 3000))) { clearInterval(watching); published(); }
-      if (t > 40) clearInterval(watching);
+      if (left || vintedItem || vestiaireDone() || SUCCESS_TEXT.test((document.querySelector("main") || document.body).innerText.slice(0, 3000))) { clearInterval(watching); published(); }
+      if (t > 180) clearInterval(watching); // photo uploads can take a while
     }, 1000);
   }, true);
 

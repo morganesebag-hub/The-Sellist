@@ -186,6 +186,17 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
       </div>
 
       <div id="pubReady">
+        <div class="install hidden" id="pubUpdate" style="margin-bottom:14px">
+          <strong>Une nouvelle version de l’extension est disponible</strong>
+          <p class="note" style="margin-top:4px">Elle remplit mieux tes annonces. 1 minute pour la mettre à jour.</p>
+          <ol>
+            <li><a class="btn go" href="the-sellist-publier.zip" download>Télécharger la nouvelle version</a> puis double-clique sur le fichier pour le décompresser.</li>
+            <li>Dans Chrome, tape <code>chrome://extensions</code> dans la barre d’adresse.</li>
+            <li>Sur « The Sellist · Publier », clique sur <strong>Supprimer</strong>.</li>
+            <li>Clique sur <strong>Charger l’extension non empaquetée</strong> et choisis le nouveau dossier <code>extension-sellist</code>.</li>
+            <li>Reviens ici et recharge la page.</li>
+          </ol>
+        </div>
         <button class="btn go big" id="fillBtn" type="button">Remplir mes annonces</button>
         <ol class="how">
           <li>Un onglet s’ouvre par site, et on remplit l’annonce pour toi, photos comprises.</li>
@@ -501,11 +512,20 @@ $("#fiche").addEventListener("input",()=>{if($("#texts").open&&!Object.keys(edit
 const hasExt=()=>!!document.documentElement.dataset.sellistApp;
 const desktop=()=>innerWidth>=700&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 function chosenSites(){return [...document.querySelectorAll("#sites input:checked")].map(i=>i.value)}
+/* Version de l'extension installée (annoncée par bridge.js depuis la 0.5.6 ; avant, rien).
+   À mettre à jour à chaque nouvelle version publiée de l'extension. */
+const EXT_VERSION="0.5.6";
+const extOutdated=()=>{
+  const v=(document.documentElement.dataset.sellistVersion||"0").split(".").map(Number),w=EXT_VERSION.split(".").map(Number);
+  for(let i=0;i<3;i++){if((v[i]||0)!==(w[i]||0))return (v[i]||0)<(w[i]||0)}
+  return false;
+};
 function renderPub(){
   const ids=chosenSites(),ok=hasExt()&&desktop();
   $("#mobileNote").classList.toggle("hidden",desktop());
   $("#pubReady").classList.toggle("hidden",!ok);
   $("#pubInstall").classList.toggle("hidden",ok||!desktop());
+  $("#pubUpdate").classList.toggle("hidden",!ok||!extOutdated());
   const names=ids.map(id=>SITES[id].name.replace("Vestiaire Collective","Vestiaire"));
   $("#fillBtn").textContent=names.length?`Remplir ${names.join(" + ")}`:"Choisis au moins un site";
   $("#fillBtn").disabled=!names.length;

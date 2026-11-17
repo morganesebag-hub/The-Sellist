@@ -1,6 +1,7 @@
 // Runs on The Sellist web app. Tells the page the extension is here, and passes
 // "fill this listing" requests to the background worker. Nothing else is read.
 document.documentElement.dataset.sellistApp = "1";
+document.documentElement.dataset.sellistVersion = chrome.runtime.getManifest().version;
 
 function announce() {
   window.postMessage({ source: "sellist-app-ext", type: "READY" }, "*");

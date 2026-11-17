@@ -54,6 +54,15 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     });
     return;
   }
+  if (msg.type === "SUBMIT_CLICK") {
+    // the seller clicked the site's own publish button: remember it, so the next page in
+    // this tab (some sites reload after publishing) can report the listing as online
+    const key = "job:" + (sender.tab && sender.tab.id);
+    chrome.storage.local.get(key).then((r) => {
+      if (r[key]) chrome.storage.local.set({ [key]: { ...r[key], submitAt: Date.now() } });
+    });
+    return;
+  }
   if (msg.type === "DONE_JOB") {
     chrome.storage.local.remove("job:" + (sender.tab && sender.tab.id));
   }

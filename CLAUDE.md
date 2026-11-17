@@ -5,7 +5,7 @@
 - `index.html` is now the simplified test page: one article at a time, photos → AI fills the fiche → one button fills Vinted + Leboncoin + Vestiaire through `extension-sellist/`. No eBay. Desktop Chrome only for the filling.
 - AI goes through Morgane's small server (`API_URL` in index.html, empty until set up), with a tester code and a limit of 10 articles per tester. The server contract is in the comment at the top of the script. `?demo` simulates the AI.
 - `version-complete.html` is the full Claude version (bulk mode, stock, stats, account), kept for later. Everything below describes that full version.
-- `extension-sellist/`: Morgane's extension. Vinted is filled completely (`vinted.js`, hooks in `FORMS.md`); Leboncoin and Vestiaire get title, description, price and photos. Rebuild the zip with `./build-extension-sellist.sh`. `extension/` is Lucie's and stays untouched.
+- `extension-sellist/`: Morgane's extension. Vinted is filled completely (`vinted.js`, hooks in `FORMS.md`); Leboncoin and Vestiaire get title, description, price and photos. Rebuild the zip with `./build-extension-sellist.sh`. When bumping the extension version in `manifest.json`, set `EXT_VERSION` in index.html to the same value: older installs then see an update banner (bridge.js announces its version since 0.5.6). `extension/` is Lucie's and stays untouched.
 
 "Poste une fois. Vends partout." French-language assistant that helps resellers publish one item to Vinted, Vestiaire Collective, Leboncoin and eBay, then reminds them to remove the listing elsewhere once it sells. No commission, and it never asks for marketplace passwords.
 

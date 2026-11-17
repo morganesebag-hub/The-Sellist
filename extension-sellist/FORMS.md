@@ -45,6 +45,10 @@ Read only: nothing was saved or published.
   Bon état / État satisfaisant). Leboncoin pre-fills most of them from the title.
 - Step 3 (recap, then publish): `textarea[name="body"]` (Leboncoin writes its own AI text, kept as is), `input[name="price_cents"]`
   (shows a recommended range), address combobox `location`. Not read beyond this page.
+- 2026-11-17: category suggestions are now `div[role=button][aria-label^="Choix N : catégorie"]` (were buttons).
+  Univers is pre-filled by Leboncoin from the title alone and is often wrong: we always set it from our fiche
+  (categorie "… homme/femme/enfant") before the other menus, since sizes and types depend on it. Men's sizes are
+  plain letters (S, M, L…), women's are "38 - M".
 
 ## eBay: https://www.ebay.fr/sl/prelist/suggest (multi-step)
 - Step 1: keyword box "Dites-nous ce que vous vendez" + "Rechercher".

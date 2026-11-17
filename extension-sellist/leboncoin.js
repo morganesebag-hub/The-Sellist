@@ -1,7 +1,7 @@
 // Leboncoin: fills each step of www.leboncoin.fr/deposer-une-annonce as it appears.
 // Read on the live form on 2026-11-13 (see FORMS.md):
-//  1 title input[name=subject] → category suggestions (buttons "Choix 1 : catégorie … dans la famille …")
-//  2 photos input[type=file] (generic) + attribute comboboxes (Univers, Taille, Type, Marque, Couleur, État),
+//  1 title input[name=subject] → category suggestions (div role=button "Choix 1 : catégorie … dans la famille …")
+//  2 photos input[type=file] (generic) + attribute comboboxes (Univers, Taille, Type, Marque, Couleur, État; men's sizes are S/M/L),
 //    many pre-filled by Leboncoin from the title
 //  3 recap: textarea[name=body] (Leboncoin writes its own text), input[name=price_cents], address
 // Never clicks "Continuer" or publishes.
@@ -23,7 +23,8 @@ window.SellistLeboncoin = (() => {
   // step 1: pick the suggested category (clothes → Mode > Vêtements)
   async function category(f, done) {
     if (done.l1) return;
-    const sugg = [...document.querySelectorAll("button[aria-label]")].filter((b) => /^Choix \d+ : catégorie/.test(b.getAttribute("aria-label")));
+    // suggestions were <button>, now <div role=button> (2026-11-17): match any element
+    const sugg = [...document.querySelectorAll("[aria-label]")].filter((b) => /^Choix \d+ : catégorie/.test(b.getAttribute("aria-label")));
     if (!sugg.length) return;
     done.l1 = true;
     const label = (b) => norm(b.getAttribute("aria-label"));
@@ -35,23 +36,57 @@ window.SellistLeboncoin = (() => {
 
   // step 2: attribute menus; Leboncoin pre-fills most of them from the title, we fill what is empty
   const COND = { "satisfaisant": "etat satisfaisant" };
+  // who the item is for, from our own fiche ("Vestes en jean homme"); null if the fiche doesn't say
+  function univers(f) {
+    const w = " " + norm([f.categorie, f.titre].join(" ")) + " ";
+    if (/\b(enfant|enfants|fille|filles|garcon|garcons|bebe|bebes|junior)\b/.test(w)) return "enfant";
+    if (/\bhommes?\b/.test(w)) return "homme";
+    if (/\bfemmes?\b/.test(w)) return "femme";
+    return null;
+  }
+  const findCombos = () => [...document.querySelectorAll("input[role=combobox]")].filter((i) => document.getElementById(i.id + "-menu") && !/location|adresse/i.test(i.name + i.placeholder));
+  async function openMenu(i) {
+    const tg = document.getElementById(i.id + "-toggle-button");
+    if (!tg) return null;
+    press(tg); await wait(600);
+    const ul = document.getElementById(i.id + "-menu");
+    const opts = ul ? [...ul.querySelectorAll("li[role=option], li")] : [];
+    return { tg, opts, names: opts.map((o) => norm(o.innerText)) };
+  }
+  // Univers first, and always ours when the fiche names it: Leboncoin guesses it from the
+  // title alone (often "Femme"), and the size and type menus depend on it.
+  async function setUnivers(f) {
+    const want = univers(f);
+    for (const i of findCombos()) {
+      const m = await openMenu(i);
+      if (!m) continue;
+      if (!(m.names.includes("femme") && m.names.includes("homme"))) { press(m.tg); await wait(300); continue; }
+      const o = want && m.opts.find((x) => norm(x.innerText) === want);
+      if (o && norm(i.value) !== want) { press(o); await wait(1200); return true; }
+      press(m.tg); await wait(300);
+      return false;
+    }
+    return false;
+  }
   async function attributes(f, done) {
-    const combos = [...document.querySelectorAll("input[role=combobox]")].filter((i) => document.getElementById(i.id + "-menu") && !/location|adresse/i.test(i.name + i.placeholder));
-    if (!combos.length || done.l2) return;
+    if (!findCombos().length || done.l2) return;
     done.l2 = true;
     await wait(600);
-    for (const i of combos) {
-      const tg = document.getElementById(i.id + "-toggle-button");
-      if (!tg) continue;
-      press(tg); await wait(600);
-      const ul = document.getElementById(i.id + "-menu");
-      const opts = ul ? [...ul.querySelectorAll("li[role=option], li")] : [];
-      const names = opts.map((o) => norm(o.innerText));
+    try { if (await setUnivers(f)) done.univers = true; } catch (e) {}
+    for (const i of findCombos()) {
+      const m = await openMenu(i);
+      if (!m) continue;
+      const { tg, opts, names } = m;
+      if (names.includes("femme") && names.includes("homme")) { press(tg); await wait(300); continue; } // done above
       let field = null, want = null;
       if (names.includes("tres bon etat")) { field = "etat"; want = COND[norm(f.etat)] || norm(f.etat); }
-      else if (names.some((n) => /^\d+ - /.test(n))) { field = "taille"; const t = norm(f.taille).split(/[\/ ,]+/)[0]; want = names.find((n) => n.startsWith(t + " -") || n.endsWith("- " + t)); }
+      else if (names.some((n) => /^\d+ - /.test(n)) || (names.includes("xs") && names.includes("xl"))) {
+        // sizes are "38 - M" (women) or "M" (men): try each part of our size ("M / 38")
+        field = "taille";
+        const toks = norm(f.taille).split(/[\/ ,;]+/).filter(Boolean);
+        for (const t of toks) { want = names.find((n) => n === t || n.startsWith(t + " -") || n.endsWith("- " + t)); if (want) break; }
+      }
       else if (names.includes("blanc")) { field = "couleur"; const c = norm(f.couleur).split(" ")[0]; want = names.find((n) => n.split(" / ")[0] === c || n.startsWith(c)); }
-      else if (names.includes("femme") && names.includes("homme")) { field = "univers"; const w = norm([f.titre, f.categorie].join(" ")); want = /homme/.test(w) ? "homme" : /enfant|fille|garcon|bebe/.test(w) ? "enfant" : "femme"; }
       else if (names.some((n) => /manteaux/.test(n))) { field = "type"; const w = " " + norm([f.titre, f.categorie].join(" ")); want = names.find((n) => n.split(/[ /&]+/).some((x) => x.length > 3 && w.includes(" " + x.replace(/s$/, "")))); }
       else { field = "marque"; want = norm(f.marque); }
       const hasValue = !!i.value.trim();

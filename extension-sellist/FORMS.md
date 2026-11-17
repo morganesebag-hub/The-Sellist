@@ -27,6 +27,7 @@ Read only: nothing was saved or published.
   `<select id="preductAddCategory">` (48 types), brand `#depositForm__form__brands-input` + result buttons
   `[class*=optionsList__item]`. "Continuer" (`#vc-preduct-add-submit`) creates a draft: left to the seller.
 - Drafts: /sell-clothes-online/product-drafts, each opens submit-an-item.shtml?id=<draft>.
+- After step 1, "Continuer" goes to /proposer-un-article.shtml?id=<draft> on fr (translated DEPOSIT_FORM.CONTINUE.URL, seen 2026-11-17). Same form as submit-an-item.shtml.
 - `#/informations`: comboboxes `#subcategory` `#material` `#color` `#pattern` (type to filter, options
   `#<id>-listbox [role=option]`), condition `#condition` (role=button, `#condition-listbox`:
   Jamais porté avec étiquette / Jamais porté / Très bon état / Bon état / Correct),

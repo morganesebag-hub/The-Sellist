@@ -1,7 +1,7 @@
 // Vestiaire Collective: fills each step of the listing as it appears.
 // Read on the live forms on 2026-11-13 (see FORMS.md):
 //  step 1  /sell-clothes-online/   universe radios, <select id=preductAddCategory>, brand search
-//  details submit-an-item.shtml#/informations  comboboxes #subcategory #material #color #pattern,
+//  details proposer-un-article.shtml (or submit-an-item.shtml for drafts) #/informations  comboboxes #subcategory #material #color #pattern,
 //          condition dropdown #condition, size <select> norm + <select id=size>
 //  photos  #/photos  input#file_upload (multiple)     description #/description  textarea#description
 //  price   #/price   input#priceField
@@ -129,7 +129,7 @@ window.SellistVestiaire = (() => {
   async function tick(job, done) {
     const f = job.fiche || {};
     // past step 1 the brand is already chosen (shown at the top of the steps)
-    if (/submit-an-item/.test(location.pathname) && f.marque) done.marque = true;
+    if (/submit-an-item|proposer-un-article/.test(location.pathname) && f.marque) done.marque = true;
     try { await step1(f, done); } catch (e) {}
     try { await details(f, done); } catch (e) {}
   }

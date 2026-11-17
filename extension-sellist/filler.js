@@ -9,7 +9,7 @@
   });
   if (!job) return;
   // only on the listing forms, not on the pages shown after publishing
-  if (!/\/items\/new|submit-an-item|sell-clothes-online|deposer-une-annonce/.test(location.pathname)) return;
+  if (!/\/items\/new|submit-an-item|proposer-un-article|sell-clothes-online|deposer-une-annonce/.test(location.pathname)) return;
 
   // ---------- which field is which ----------
   // Matched on the field's label, placeholder, name, id or aria-label (lowercase, no accents).
@@ -151,7 +151,7 @@
   // ---------- publication: tell The Sellist once the listing is really online ----------
   // Only "code + site" leaves the browser, never the listing itself.
   const SITE_NAME = vinted ? "Vinted" : vestiaire ? "Vestiaire" : leboncoin ? "Leboncoin" : "";
-  const FORM_PATH = /\/items\/new|submit-an-item|sell-clothes-online|deposer-une-annonce/;
+  const FORM_PATH = /\/items\/new|submit-an-item|proposer-un-article|sell-clothes-online|deposer-une-annonce/;
   const SUCCESS_TEXT = /(f[ée]licitations|votre annonce (est|a bien|sera)|annonce (publi[ée]e|en ligne|en cours de (validation|v[ée]rification))|article (est )?en ligne|merci pour votre (annonce|d[ée]p[oô]t))/i;
   let reported = false, watching = 0;
   function published() {

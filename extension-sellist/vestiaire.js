@@ -78,12 +78,22 @@ window.SellistVestiaire = (() => {
     const opts = lb ? [...lb.querySelectorAll("[role=option]")] : [];
     const o = choose(opts);
     if (o) { press(o); await wait(500); }
+    else if (query) setInput(el, ""); // don't leave unmatched text in the field
     el.blur();
     return !!o;
   }
+  // tries each meaningful word in turn ("zèbre noir et beige" → zèbre: nothing, noir: Noir)
+  async function comboWords(id, text) {
+    const ws = [...new Set(norm(text).replace(/[0-9%]+/g, " ").split(/[^a-z-]+/).filter((w) => w.length > 2 && !/^(et|avec|des|les|pour)$/.test(w)))];
+    for (const w of ws.slice(0, 4)) {
+      if (await combo(id, w, (opts) => opts.find((o) => norm(o.innerText) === w) || (opts.length === 1 ? opts[0] : null))) return true;
+    }
+    return false;
+  }
   const COND = { "neuf avec etiquette": "jamais porte avec etiquette", "neuf sans etiquette": "jamais porte", "tres bon etat": "tres bon etat", "bon etat": "bon etat", "satisfaisant": "correct" };
   async function details(f, done) {
-    if (!document.getElementById("subcategory") || done.v2) return;
+    // shoes have no #subcategory on this step (seen 2026-11-17): start on any detail field
+    if (done.v2 || !["subcategory", "condition", "material", "color"].some((id) => document.getElementById(id))) return;
     done.v2 = true;
     await wait(500);
     // category: list every option, keep the one named in the item's words
@@ -100,11 +110,9 @@ window.SellistVestiaire = (() => {
       const o = lb && [...lb.querySelectorAll("[role=option]")].find((x) => norm(x.innerText.split("\n")[0]) === want);
       if (o) { press(o); done.etat = true; await wait(400); } else press(c);
     }
-    // material and colour: type the first meaningful word, take the exact or only match
-    const first = (s) => (norm(s).replace(/[0-9%]+/g, " ").split(/[ ,/]+/).find((w) => w.length > 2) || "");
-    const exactOrOnly = (want) => (opts) => opts.find((o) => norm(o.innerText) === want) || (opts.length === 1 ? opts[0] : null);
-    if (f.matiere) done.matiere = await combo("material", first(f.matiere), exactOrOnly(first(f.matiere)));
-    if (f.couleur) done.couleur = await combo("color", first(f.couleur), exactOrOnly(first(f.couleur)));
+    // material and colour: type each meaningful word, take the exact or only match
+    if (f.matiere) done.matiere = await comboWords("material", f.matiere);
+    if (f.couleur) done.couleur = await comboWords("color", f.couleur);
     // print: plain ("Uni") unless the fiche names a pattern as a whole word ("pois", "rayures"…).
     // Prefix matching picked "Pois" from words like "poignets" or "poitrine".
     await combo("pattern", "", (opts) => {
@@ -125,12 +133,17 @@ window.SellistVestiaire = (() => {
     if (f.taille) {
       const sels = [...document.querySelectorAll("select")];
       const sz = document.getElementById("size");
-      const normSel = sels.find((s) => s !== sz && [...s.options].some((o) => o.text.trim() === "FR"));
-      const tok = String(f.taille).split(/[\/,; ]+/).map((t) => t.trim()).filter(Boolean);
+      // clothes offer FR / International…, shoes only EU / UK / US / IT / KR
+      const normSel = sels.find((s) => s !== sz && [...s.options].some((o) => /^(FR|EU|International)$/.test(o.text.trim())));
+      const tok = String(f.taille).replace(/(\d),(\d)/g, "$1.$2").split(/[\/,; ]+/)
+        .map((t) => t.trim()).filter((t) => t && !/^(taille|pointure)$/i.test(t));
       for (const t of tok) {
-        const numeric = /^\d/.test(t);
-        if (normSel) { setSelect(normSel, (o) => o.text.trim() === (numeric ? "FR" : "International")); await wait(600); }
-        if (sz && setSelect(sz, (o) => norm(o.text) === norm(t))) { done.taille = true; break; }
+        const order = /^\d/.test(t) ? ["FR", "EU", "IT"] : ["International"];
+        for (const name of normSel ? order : [null]) {
+          if (name) { if (!setSelect(normSel, (o) => o.text.trim() === name)) continue; await wait(600); }
+          if (sz && setSelect(sz, (o) => norm(o.text) === norm(t))) { done.taille = true; break; }
+        }
+        if (done.taille) break;
       }
     }
   }

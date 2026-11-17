@@ -59,3 +59,8 @@ Read only: nothing was saved or published.
   repeats options ("Noir" twice). Press each name only once, or the second press unticks it.
 - Vestiaire `#pattern` options: Uni, Zèbre, Python, Léopard, Ecossais, Pied-de-poule, Fleuri, Pois,
   Prince de Galle, Vichy, Rayures, Crocodile, Autre. Default Uni; a pattern only when the fiche names it as a word.
+
+## 2026-11-17 · shoes (Baskets)
+- Vinted: the size menu for shoes is `category-size-single-grid` (clothes: `category-size-single-grid_chips`). `size()` now finds any `[data-testid^="category-size-"][data-testid$="-input"]`. Options are role=checkbox with plain labels ("37", "37.5"); "37,5" is turned into "37.5".
+- Vestiaire step 2 for shoes has no `#subcategory` (only #condition, #material, #color, #pattern, the size norm select and #size). The norm select offers EU / UK / US / IT / KR (no FR); EU sizes are "34" … "43" with halves.
+- Vestiaire colour and material: each word of the fiche is tried in turn ("Zèbre noir et beige" → Noir), and unmatched text is cleared from the field.

@@ -82,15 +82,18 @@ window.SellistVinted = (() => {
 
   async function size(taille) {
     if (!taille) return false;
-    const key = "category-size-single-grid_chips";
+    // clothes: "category-size-single-grid_chips", shoes: "category-size-single-grid" (seen 2026-11-17)
+    const b = document.querySelector('[data-testid^="category-size-"][data-testid$="-input"]');
+    if (!b) return false;
+    const key = b.dataset.testid.replace(/-input$/, "");
     const c = await openMenu(key);
     if (!c) return false;
-    const tokens = String(taille).split(/[\/,;|]| ou /i).map((t) => t.trim()).filter(Boolean);
+    const tokens = String(taille).replace(/(\d),(\d)/g, "$1.$2").split(/[\/,;|]| ou /i).map((t) => t.trim()).filter(Boolean);
     const tabs = [...c.querySelectorAll("button")];
     const tab = (name) => tabs.find((b) => b.textContent.trim() === name);
     const clean = (e) => norm(e.textContent.trim().replace(/^(FR|EU|UK|IT|US)\s+/, ""));
     for (const tok of tokens) {
-      const t = norm(tok.replace(/^taille\s*/i, ""));
+      const t = norm(tok.replace(/^(taille|pointure)\s*/i, ""));
       if (t === "unique" || t === "taille unique") {
         const o = options(c).find((e) => clean(e) === "taille unique");
         if (o) { press(o); await wait(400); await closeMenu(key); return true; }
@@ -157,7 +160,7 @@ window.SellistVinted = (() => {
     const price = $t("price-input--input");
     if (price && values.prix && !price.value) { setInput(price, String(values.prix).replace(".", ",")); done.prix = true; }
     step();
-    return { categorie: valueOf("catalog-select-dropdown"), taille: valueOf("category-size-single-grid_chips") };
+    return { categorie: valueOf("catalog-select-dropdown"), taille: (document.querySelector('[data-testid^="category-size-"][data-testid$="-input"]') || {}).innerText || "" };
   }
 
   return { run };

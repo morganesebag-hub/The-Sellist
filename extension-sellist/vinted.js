@@ -126,6 +126,9 @@ window.SellistVinted = (() => {
     const found = options(c)
       .map((e) => ({ e, n: label(e) }))
       .filter((x) => x.n && t.includes(" " + x.n + " "))
+      // with photos, Vinted adds a "Suggestions" row that repeats some options: pressing
+      // the same colour twice ticks then unticks it, so keep each name once
+      .filter((x, i, all) => all.findIndex((y) => y.n === x.n) === i)
       .sort((a, b) => b.n.length - a.n.length)
       .slice(0, max);
     for (const x of found) { press(x.e); await wait(300); }

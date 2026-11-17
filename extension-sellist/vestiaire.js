@@ -105,10 +105,21 @@ window.SellistVestiaire = (() => {
     const exactOrOnly = (want) => (opts) => opts.find((o) => norm(o.innerText) === want) || (opts.length === 1 ? opts[0] : null);
     if (f.matiere) done.matiere = await combo("material", first(f.matiere), exactOrOnly(first(f.matiere)));
     if (f.couleur) done.couleur = await combo("color", first(f.couleur), exactOrOnly(first(f.couleur)));
-    // print: plain unless the notes name a pattern
+    // print: plain ("Uni") unless the fiche names a pattern as a whole word ("pois", "rayures"…).
+    // Prefix matching picked "Pois" from words like "poignets" or "poitrine".
     await combo("pattern", "", (opts) => {
-      const n = bestByWords(opts.map((o) => o.innerText.trim()), [f.notes, f.titre].join(" "));
-      return opts.find((o) => o.innerText.trim() === (n || "Uni"));
+      const t = (" " + norm([f.titre, f.categorie, f.couleur, f.notes].join(" ")).replace(/[^a-z0-9]+/g, " ") + " ")
+        .replace(/ (raye|rayee|rayes|rayees|marinieres?) /g, " rayures ").replace(/ (fleurs?|fleurie|fleuries|floral|florale) /g, " fleuri ")
+        .replace(/ (croco) /g, " crocodile ").replace(/ (leo) /g, " leopard ").replace(/ (tartan|ecossaise|ecossaises) /g, " ecossais ");
+      // options seen 2026-11-17: Uni, Zèbre, Python, Léopard, Ecossais, Pied-de-poule, Fleuri, Pois,
+      // Prince de Galle, Vichy, Rayures, Crocodile, Autre
+      const named = opts.find((o) => {
+        const n = norm(o.innerText);
+        if (!n || n === "uni" || n === "autre") return false;
+        const w = n.replace(/[^a-z0-9]+/g, " ").trim();
+        return w.length > 2 && new RegExp(" " + w.replace(/(s|x)$/, "") + "(s|x|es)? ").test(t);
+      });
+      return named || opts.find((o) => norm(o.innerText) === "uni");
     });
     // size: norm then value
     if (f.taille) {

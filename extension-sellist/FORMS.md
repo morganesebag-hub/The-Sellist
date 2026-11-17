@@ -53,3 +53,9 @@ Read only: nothing was saved or published.
 ## eBay: https://www.ebay.fr/sl/prelist/suggest (multi-step)
 - Step 1: keyword box "Dites-nous ce que vous vendez" + "Rechercher".
 - Step 2: matching catalogue item / category. Step 3: full form (creates a draft). Not read.
+
+## Notes 2026-11-17
+- Vinted: once photos are added, the colour (and sometimes material) menu shows a "Suggestions" row that
+  repeats options ("Noir" twice). Press each name only once, or the second press unticks it.
+- Vestiaire `#pattern` options: Uni, Zèbre, Python, Léopard, Ecossais, Pied-de-poule, Fleuri, Pois,
+  Prince de Galle, Vichy, Rayures, Crocodile, Autre. Default Uni; a pattern only when the fiche names it as a word.

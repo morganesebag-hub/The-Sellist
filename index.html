@@ -147,7 +147,7 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
   <section class="step">
     <div class="step-h"><span class="n">1</span><h2>Tes photos</h2></div>
     <div class="card">
-      <input id="fileIn" type="file" accept="image/*" multiple class="hidden">
+      <input id="fileIn" type="file" accept="image/*,.heic,.heif" multiple class="hidden">
       <div class="drop" id="drop" role="button" tabindex="0">
         <strong>Ajoute les photos de ton article</strong>
         <p>Glisse-les ici ou clique pour les choisir. La première sera la couverture. Pense à l’étiquette : l’IA y lit la marque et la taille.</p>
@@ -365,10 +365,30 @@ async function shrink(blob,max,q){
   }catch(e){return blob}
 }
 const toDataUrl=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b)});
+/* Photos iPhone (HEIC) : Chrome ne sait pas les lire, on les convertit en JPEG sur l'ordinateur.
+   L'outil de conversion n'est chargé que si une photo HEIC est ajoutée. */
+const isHeic=f=>/image\/hei[cf]/i.test(f.type)||/\.hei[cf]$/i.test(f.name||"");
+let heicLib=null;
+function loadHeic(){
+  if(!heicLib)heicLib=new Promise((res,rej)=>{const s=document.createElement("script");
+    s.src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
+    s.onload=()=>window.heic2any?res(window.heic2any):rej();s.onerror=()=>{heicLib=null;rej()};document.head.appendChild(s)});
+  return heicLib;
+}
+async function readable(f){
+  if(!isHeic(f))return f;
+  try{const conv=await loadHeic();const out=await conv({blob:f,toType:"image/jpeg",quality:.9});return Array.isArray(out)?out[0]:out}
+  catch(e){return null}
+}
 async function addFiles(list){
-  const files=[...list].filter(f=>f.type.startsWith("image/"));if(!files.length)return;
+  const files=[...list].filter(f=>f.type.startsWith("image/")||isHeic(f));if(!files.length)return;
   const room=MAX_PHOTOS-photos.length;if(room<=0){toast(`${MAX_PHOTOS} photos maximum.`);return}
-  for(const f of files.slice(0,room)){const blob=await shrink(f,1600,.85);photos.push({key:uid(),blob,url:URL.createObjectURL(blob)})}
+  if(files.some(isHeic))toast("Conversion des photos iPhone…");
+  let failed=0;
+  for(const f of files.slice(0,room)){const src=await readable(f);if(!src){failed++;continue}
+    const blob=await shrink(src,1600,.85);photos.push({key:uid(),blob,url:URL.createObjectURL(blob)})}
+  if(failed)toast(failed>1?`${failed} photos n'ont pas pu être lues. Essaie en JPEG.`:"Une photo n'a pas pu être lue. Essaie en JPEG.");
+  if(!photos.length)return;
   if(files.length>room)toast(`On a gardé les ${room} premières : ${MAX_PHOTOS} maximum.`);
   if(!startedAt)startedAt=Date.now();
   renderPhotos();showSteps();

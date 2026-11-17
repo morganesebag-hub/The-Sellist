@@ -141,17 +141,19 @@ const ANNONCES = {
 };
 const FICHE = {
   type: "object", additionalProperties: false,
-  required: ["titre", "marque", "categorie", "taille", "couleur", "matiere", "etat", "notes"],
+  required: ["titre", "marque", "categorie", "taille", "couleur", "matiere", "etat", "notes", "prix"],
   properties: {
+    prix: { type: "integer" },
     titre: { type: "string" }, marque: { type: "string" }, categorie: { type: "string" },
     taille: { type: "string" }, couleur: { type: "string" }, matiere: { type: "string" },
     etat: { type: "string", enum: [...ETATS, ""] }, notes: { type: "string" }
   }
 };
 const STYLE = `Consignes par site (les annonces s'adressent aux acheteurs, en français, sans emoji, sans tutoiement ni vouvoiement appuyé) :
-- vinted : marque, taille, état, couleur et matière ont leurs propres champs, la description ne les répète pas en liste. Elle est courte et directe (ce qui rend l'article désirable, détails, défauts), avec 3 à 5 mots-clés en fin précédés de #. Titre court : type d'article et marque.
+- vinted : marque, taille, état, couleur et matière ont leurs propres champs, la description ne les répète pas en liste. Elle est courte et directe (ce qui rend l'article désirable, détails, défauts), sans mots-clés en fin. Titre court : type d'article et marque.
 - leboncoin : titre clair avec le type d'article et l'élément clé (marque, taille). Description informative et complète (état, taille, défauts, envoi ou remise en main propre), car les acheteurs y lisent tout.
 - vestiaire : description soignée et sans superlatifs creux, qui décrit la coupe ou le modèle, les détails et l'état précis.
+Jamais de caractère # ni de hashtag, dans aucune annonce.
 N'invente aucune information absente de la fiche : ni mesure, ni matière, ni coupe, ni défaut, ni précision sur un défaut (où il se voit, sa taille, s'il part au lavage…), ni promesse de photos supplémentaires. Reprends les défauts connus tels qu'ils sont écrits, sans les minimiser ni les détailler davantage.`;
 
 async function callClaude(env, content, schema) {
@@ -177,6 +179,16 @@ async function callClaude(env, content, schema) {
   return JSON.parse(text);
 }
 
+// "#" never reaches a listing: drop hashtag-only lines, then any remaining "#"
+const noHash = (t) => String(t || "").split("\n").filter((l) => !/^\s*(#\S+\s*)+$/.test(l)).join("\n").replace(/#/g, "").replace(/\n{3,}/g, "\n\n").trim();
+function clean(out) {
+  for (const id of Object.keys((out && out.annonces) || {})) {
+    const a = out.annonces[id];
+    if (a) { a.titre = noHash(a.titre); a.description = noHash(a.description); }
+  }
+  return out;
+}
+
 async function analyse(env, images) {
   const content = [
     ...images.map((b64) => ({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: b64.replace(/^data:image\/\w+;base64,/, "") } })),
@@ -189,12 +201,13 @@ async function analyse(env, images) {
 - couleur : la couleur principale en un ou deux mots (ex. "Bleu").
 - matiere : la matière principale en un mot si l'étiquette la montre (ex. "Coton").
 - etat : une valeur parmi ${ETATS.join(", ")}, ou vide si impossible à juger.
+- prix : un prix de vente conseillé en euros (nombre entier), réaliste pour cet article d'occasion en France sur Vinted ou Leboncoin, selon le type, la marque et l'état. La vendeuse pourra le changer. 0 seulement si tu ne peux vraiment pas l'estimer.
 - notes : défauts ou détails visibles SUR L'ARTICLE en une ou deux phrases, ou vide. Jamais de remarque sur les photos elles-mêmes (ce qui est visible ou pas, leur qualité) : ce texte va dans l'annonce.
 2) Rédige ensuite une annonce pour chacun des 3 sites, à partir de la fiche uniquement.
 ${STYLE}` }
   ];
   const schema = { type: "object", additionalProperties: false, required: ["fiche", "annonces"], properties: { fiche: FICHE, annonces: ANNONCES } };
-  return await callClaude(env, content, schema);
+  return clean(await callClaude(env, content, schema));
 }
 
 async function rewrite(env, fiche) {
@@ -202,5 +215,5 @@ async function rewrite(env, fiche) {
     .map((k) => `- ${k} : ${String(fiche[k] || "(non précisé)").slice(0, 400)}`).join("\n");
   const content = [{ type: "text", text: `Rédige une annonce pour chacun des 3 sites à partir de cette fiche d'article de seconde main :\n${lignes}\n\n${STYLE}` }];
   const schema = { type: "object", additionalProperties: false, required: ["annonces"], properties: { annonces: ANNONCES } };
-  return await callClaude(env, content, schema);
+  return clean(await callClaude(env, content, schema));
 }

@@ -28,6 +28,7 @@ body{margin:0;background:var(--lin);color:var(--encre);font:400 16px/1.5 "DM San
 h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;line-height:1.1}
 em.serif{font-family:"Instrument Serif",Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;letter-spacing:0}
 .hidden{display:none!important}
+.hint{display:block;margin-top:4px;font-size:12px;color:var(--muted)}
 :focus-visible{outline:2px solid var(--vert);outline-offset:2px}
 
 .bar{position:sticky;top:0;z-index:9;background:var(--lin);border-bottom:1px solid var(--line)}
@@ -171,7 +172,7 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
         <div><label for="couleur">Couleur</label><input id="couleur" placeholder="Ex. Bleu" autocomplete="off"></div>
         <div><label for="matiere">Matière</label><input id="matiere" placeholder="Ex. Coton" autocomplete="off"></div>
         <div class="full"><label for="notes">Défauts ou détails <small>(facultatif)</small></label><textarea id="notes" placeholder="Ex. Petite tache sous la manche gauche."></textarea></div>
-        <div><label for="prix">Ton prix (€)</label><input id="prix" type="number" min="1" step="1" inputmode="decimal" placeholder="Ex. 45"></div>
+        <div><label for="prix">Ton prix (€)</label><input id="prix" type="number" min="1" step="1" inputmode="decimal" placeholder="Ex. 45"><small id="prixHint" class="hint hidden">Prix estimé par l’IA. Change-le si tu veux.</small></div>
       </div>
     </form>
   </section>
@@ -293,7 +294,7 @@ async function demoApi(path,body){
   if(path==="analyse"){
     if(used>=LIMIT)throw {erreur:"limite"};
     store.set("ts-demo-used",used+1);
-    const fiche={titre:"Veste en jean",marque:"Sézane",categorie:"Vestes en jean femme",taille:"38",couleur:"Bleu",matiere:"Coton",etat:"Très bon état",notes:""};
+    const fiche={titre:"Veste en jean",marque:"Sézane",categorie:"Vestes en jean femme",taille:"38",couleur:"Bleu",matiere:"Coton",etat:"Très bon état",notes:"",prix:35};
     return {fiche,annonces:templateAnnonces(fiche),restants:LIMIT-used-1,limite:LIMIT};
   }
   if(path==="annonces")return {annonces:templateAnnonces(body.fiche)};
@@ -462,9 +463,11 @@ async function analyse(){
     const f=out.fiche||{};
     for(const k of ["titre","marque","categorie","taille","couleur","matiere","notes"]){const v=typeof f[k]==="string"?f[k].trim():"";if(v&&!$("#"+k).value.trim())$("#"+k).value=v}
     if(f.etat&&[...$("#etat").options].some(o=>o.text===f.etat))$("#etat").value=f.etat;
+    const px=Math.round(Number(f.prix));
+    if(px>0&&!$("#prix").value){$("#prix").value=px;$("#prix").classList.remove("miss");$("#prixHint").classList.remove("hidden")}
     aiAnnonces=out.annonces||null;aiFicheSnap=JSON.stringify(readFiche(true));
     if(out.restants!=null){quota={restants:out.restants,limite:out.limite||quota.limite};renderQuota()}
-    aiStatus("✓ Fiche remplie. Vérifie surtout la marque, la taille et l’état, puis indique ton prix.","ok");
+    aiStatus($("#prix").value?"✓ Fiche remplie, avec un prix estimé. Vérifie surtout la marque, la taille, l’état et le prix.":"✓ Fiche remplie. Vérifie surtout la marque, la taille et l’état, puis indique ton prix.","ok");
     if(!$("#prix").value)$("#prix").focus({preventScroll:true});
   }catch(e){
     analysed=false;
@@ -481,9 +484,8 @@ function templateAnnonces(d){
   const nom=[d.marque,d.titre].filter(Boolean).join(" ")||"Article";
   const caract=[d.taille&&`Taille : ${d.taille}`,d.couleur&&`Couleur : ${d.couleur}`,d.matiere&&`Matière : ${d.matiere}`,d.etat&&`État : ${d.etat}`].filter(Boolean);
   const notes=d.notes?d.notes+"\n\n":"";
-  const tags=[d.marque,d.categorie,d.couleur].filter(Boolean).map(t=>"#"+t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"")).join(" ");
   return {
-    vinted:{titre:nom,description:`${nom}${d.taille?", taille "+d.taille:""}${d.etat?", "+d.etat.toLowerCase():""}.\n\n${notes}${tags}`.trim()},
+    vinted:{titre:nom,description:`${nom}${d.taille?", taille "+d.taille:""}${d.etat?", "+d.etat.toLowerCase():""}.\n\n${notes}`.trim()},
     leboncoin:{titre:[nom,d.taille&&("T"+d.taille)].filter(Boolean).join(" "),description:`${nom}.\n\n${caract.join("\n")}\n\n${notes}Envoi ou remise en main propre.`.trim()},
     vestiaire:{titre:nom,description:`${nom}${d.matiere?" en "+d.matiere.toLowerCase():""}.\n\n${notes}${caract.join("\n")}`.trim()}
   };
@@ -494,7 +496,9 @@ async function getAnnonces(){
   if(aiAnnonces&&aiFicheSnap===JSON.stringify(d))base=aiAnnonces;
   else if(aiAnnonces&&aiOn()){try{base=(await api("annonces",{fiche:d})).annonces;aiAnnonces=base;aiFicheSnap=JSON.stringify(d)}catch(e){base=templateAnnonces(d)}}
   else base=templateAnnonces(d);
-  const out={};for(const id in SITES){const b=(base&&base[id])||templateAnnonces(d)[id];out[id]={titre:(edited[id]&&edited[id].titre)??b.titre,description:(edited[id]&&edited[id].description)??b.description}}
+  // jamais de # dans les annonces : on retire les lignes de hashtags, puis tout # restant
+  const noHash=t=>String(t||"").split("\n").filter(l=>!/^\s*(#\S+\s*)+$/.test(l)).join("\n").replace(/#/g,"").replace(/\n{3,}/g,"\n\n").trim();
+  const out={};for(const id in SITES){const b=(base&&base[id])||templateAnnonces(d)[id];out[id]={titre:(edited[id]&&edited[id].titre)??noHash(b.titre),description:(edited[id]&&edited[id].description)??noHash(b.description)}}
   return out;
 }
 $("#texts").addEventListener("toggle",async()=>{
@@ -577,12 +581,12 @@ $("#fillBtn").addEventListener("click",async()=>{
   }catch(e){toast("Impossible de préparer tes photos. Réessaie.")}
   finally{btn.disabled=false;btn.textContent=label}
 });
-$("#prix").addEventListener("input",()=>$("#prix").classList.remove("miss"));
+$("#prix").addEventListener("input",()=>{$("#prix").classList.remove("miss");$("#prixHint").classList.add("hidden")});
 
 /* ---------- article suivant ---------- */
 $("#nextBtn").addEventListener("click",()=>{
   photos.forEach(p=>URL.revokeObjectURL(p.url));photos=[];article=uid();analysed=false;startedAt=0;aiAnnonces=null;aiFicheSnap=null;edited={};
-  FIELDS.forEach(f=>{$("#"+f).value=""});$("#etat").value="Très bon état";$("#texts").open=false;
+  FIELDS.forEach(f=>{$("#"+f).value=""});$("#etat").value="Très bon état";$("#prixHint").classList.add("hidden");$("#texts").open=false;
   $("#after").classList.add("hidden");$("#stepFiche").classList.add("hidden");$("#stepPub").classList.add("hidden");
   renderPhotos();aiStatus("");scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
 });

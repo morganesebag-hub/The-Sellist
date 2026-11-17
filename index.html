@@ -516,8 +516,20 @@ $("#sites").addEventListener("change",()=>{store.set("ts-sites",JSON.stringify(c
 window.addEventListener("message",e=>{
   if(e.source!==window||!e.data||e.data.source!=="sellist-app-ext")return;
   if(e.data.type==="READY")renderPub();
-  if(e.data.type==="FILL_RESULT"&&!e.data.ok)toast(e.data.error||"L’extension n’a pas répondu. Recharge la page et réessaie.");
+  if(e.data.type==="FILL_RESULT"&&fillWait[e.data.id]){fillWait[e.data.id](e.data);delete fillWait[e.data.id]}
 });
+/* Envoie une annonce à l'extension et attend sa réponse. Sans réponse (extension mise à jour
+   ou rechargée pendant que cette page était ouverte), on le dit au lieu de ne rien faire. */
+const fillWait={};
+const RELOAD_MSG="L’extension vient d’être mise à jour : recharge cette page (Cmd+R), puis réessaie.";
+function sendFill(job){
+  const id=uid();
+  return new Promise(res=>{
+    const t=setTimeout(()=>{delete fillWait[id];res({ok:false,error:RELOAD_MSG})},6000);
+    fillWait[id]=r=>{clearTimeout(t);res(r)};
+    window.postMessage({source:"sellist-app",type:"FILL",id,job},"*");
+  });
+}
 window.postMessage({source:"sellist-app",type:"PING"},"*");
 addEventListener("resize",()=>{clearTimeout(renderPub._t);renderPub._t=setTimeout(renderPub,200)});
 
@@ -532,9 +544,10 @@ $("#fillBtn").addEventListener("click",async()=>{
     const ann=await getAnnonces();
     const imgs=[];for(const ph of photos.slice(0,MAX_PHOTOS))imgs.push(await toDataUrl(await shrink(ph.blob,1280,.82)));
     for(const id of ids){
-      window.postMessage({source:"sellist-app",type:"FILL",id:uid(),job:{site:id,url:SITES[id].url,fiche:{...d,prix:Math.round(prix)},
+      const r=await sendFill({site:id,url:SITES[id].url,fiche:{...d,prix:Math.round(prix)},
         titre:ann[id].titre,description:ann[id].description,prix:Math.round(prix),champs:[],photos:imgs,
-        code:API_URL?code():"",api:API_URL}},"*");
+        code:API_URL?code():"",api:API_URL});
+      if(!r.ok){toast(r.error||RELOAD_MSG,8000);return}
       await wait(400);
     }
     $("#after").classList.remove("hidden");

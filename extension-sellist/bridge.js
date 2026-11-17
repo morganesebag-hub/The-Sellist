@@ -12,12 +12,14 @@ window.addEventListener("message", (e) => {
   if (e.data.type === "PING") { announce(); return; }
   if (e.data.type !== "FILL" || !e.data.job) return;
   const reqId = e.data.id;
-  chrome.runtime.sendMessage({ type: "FILL", job: e.data.job }, (res) => {
-    const err = chrome.runtime.lastError;
-    window.postMessage({
-      source: "sellist-app-ext", type: "FILL_RESULT", id: reqId,
-      ok: !err && !!(res && res.ok),
-      error: err ? "L’extension n’a pas répondu. Recharge la page et réessaie." : (res && res.error) || ""
-    }, "*");
-  });
+  const answer = (ok, error) => window.postMessage({ source: "sellist-app-ext", type: "FILL_RESULT", id: reqId, ok, error }, "*");
+  try {
+    chrome.runtime.sendMessage({ type: "FILL", job: e.data.job }, (res) => {
+      const err = chrome.runtime.lastError;
+      answer(!err && !!(res && res.ok), err ? "L’extension n’a pas répondu. Recharge la page et réessaie." : (res && res.error) || "");
+    });
+  } catch (err) {
+    // the extension was reloaded or updated while this page stayed open
+    answer(false, "L’extension vient d’être mise à jour : recharge cette page (Cmd+R), puis réessaie.");
+  }
 });

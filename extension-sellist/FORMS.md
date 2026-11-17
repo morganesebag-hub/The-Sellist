@@ -64,3 +64,7 @@ Read only: nothing was saved or published.
 - Vinted: the size menu for shoes is `category-size-single-grid` (clothes: `category-size-single-grid_chips`). `size()` now finds any `[data-testid^="category-size-"][data-testid$="-input"]`. Options are role=checkbox with plain labels ("37", "37.5"); "37,5" is turned into "37.5".
 - Vestiaire step 2 for shoes has no `#subcategory` (only #condition, #material, #color, #pattern, the size norm select and #size). The norm select offers EU / UK / US / IT / KR (no FR); EU sizes are "34" … "43" with halves.
 - Vestiaire colour and material: each word of the fiche is tried in turn ("Zèbre noir et beige" → Noir), and unmatched text is cleared from the field.
+
+## 2026-11-17 · Vestiaire brands
+- Vestiaire's sell form loads every brand from `https://apiv2.vestiairecollective.com/deposit/brands?isoCountry=FR&x-siteid=1&x-language=fr&x-currency=EUR` (public, no login, about 1.8 MB, 17 189 brands). Each has `banned: true|false` (3 491 refused: Zara, H&M, Shein, Kiabi, Mango, Uniqlo…). Choosing a banned brand shows « Nous n'acceptons désormais plus d'articles de cette marque à la vente. »
+- The extension (background.js `CHECK_BRAND`) keeps the list for a day and answers ok / refusee / inconnue. A few names exist twice (one refused, one accepted): accepted wins. If the list can't be loaded, the check lets Vestiaire through.

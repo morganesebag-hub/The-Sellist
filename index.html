@@ -97,6 +97,8 @@ input.miss{border-color:var(--warn)}
 .site:has(input:checked){border-color:var(--encre);background:var(--surface)}
 .how{margin:12px 0 0;padding-left:1.3em;color:var(--muted);font-size:14px;display:grid;gap:3px}
 .note{font-size:14px;color:var(--muted);margin:12px 0 0}
+.block{border:1px solid var(--warn);color:var(--encre);background:var(--surface);border-radius:14px;padding:12px 14px;margin:0 0 12px;font-size:14px;line-height:1.5}
+.block strong{color:var(--warn)}
 .after{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
 
 .install ol{margin:10px 0 4px;padding-left:1.3em;display:grid;gap:8px}
@@ -198,6 +200,7 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
             <li>Reviens ici et recharge la page.</li>
           </ol>
         </div>
+        <div class="block hidden" id="vcBlock" role="alert"></div>
         <button class="btn go big" id="fillBtn" type="button">Remplir mes annonces</button>
         <ol class="how">
           <li>Un onglet s’ouvre par site, et on remplit l’annonce pour toi, photos comprises.</li>
@@ -518,7 +521,7 @@ const desktop=()=>innerWidth>=700&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navi
 function chosenSites(){return [...document.querySelectorAll("#sites input:checked")].map(i=>i.value)}
 /* Version de l'extension installée (annoncée par bridge.js depuis la 0.5.6 ; avant, rien).
    À mettre à jour à chaque nouvelle version publiée de l'extension. */
-const EXT_VERSION="0.5.7";
+const EXT_VERSION="0.5.8";
 const extOutdated=()=>{
   const v=(document.documentElement.dataset.sellistVersion||"0").split(".").map(Number),w=EXT_VERSION.split(".").map(Number);
   for(let i=0;i<3;i++){if((v[i]||0)!==(w[i]||0))return (v[i]||0)<(w[i]||0)}
@@ -540,7 +543,7 @@ $("#sites").addEventListener("change",()=>{store.set("ts-sites",JSON.stringify(c
 window.addEventListener("message",e=>{
   if(e.source!==window||!e.data||e.data.source!=="sellist-app-ext")return;
   if(e.data.type==="READY")renderPub();
-  if(e.data.type==="FILL_RESULT"&&fillWait[e.data.id]){fillWait[e.data.id](e.data);delete fillWait[e.data.id]}
+  if((e.data.type==="FILL_RESULT"||e.data.type==="BRAND_RESULT")&&fillWait[e.data.id]){fillWait[e.data.id](e.data);delete fillWait[e.data.id]}
 });
 /* Envoie une annonce à l'extension et attend sa réponse. Sans réponse (extension mise à jour
    ou rechargée pendant que cette page était ouverte), on le dit au lieu de ne rien faire. */
@@ -554,17 +557,42 @@ function sendFill(job){
     window.postMessage({source:"sellist-app",type:"FILL",id,job},"*");
   });
 }
+// Vestiaire n'accepte que certaines marques : l'extension vérifie dans la liste de Vestiaire
+function checkBrand(marque){
+  const id=uid();
+  return new Promise(res=>{
+    const t=setTimeout(()=>{delete fillWait[id];res({statut:"?"})},15000); // ancienne extension ou pas de réseau : on laisse passer
+    fillWait[id]=r=>{clearTimeout(t);res(r)};
+    window.postMessage({source:"sellist-app",type:"CHECK_BRAND",id,marque},"*");
+  });
+}
+function showVcBlock(r,marque,others){
+  const m=esc(r.nom||marque);
+  const why=r.statut==="refusee"
+    ?`<strong>Vestiaire Collective n’accepte pas la marque ${m}.</strong> Vestiaire ne vend que certaines marques et refuse notamment la plupart des enseignes de grande distribution et de fast fashion.`
+    :`<strong>Vestiaire Collective ne connaît pas la marque ${m}.</strong> Vérifie son orthographe dans ta fiche. Si elle est juste, Vestiaire ne pourra pas la vendre : il n’accepte que les marques de sa liste.`;
+  $("#vcBlock").innerHTML=`${why} ${others?"On n’ouvre pas Vestiaire et on remplit tes autres sites.":"On n’ouvre pas Vestiaire : choisis un autre site."}`;
+  $("#vcBlock").classList.remove("hidden");
+}
 window.postMessage({source:"sellist-app",type:"PING"},"*");
 addEventListener("resize",()=>{clearTimeout(renderPub._t);renderPub._t=setTimeout(renderPub,200)});
 
 $("#fillBtn").addEventListener("click",async()=>{
-  const d=readFiche(),ids=chosenSites();
+  const d=readFiche();let ids=chosenSites();
+  $("#vcBlock").classList.add("hidden");
   if(!d.titre){toast("Dis-nous d’abord ce que tu vends.");$("#titre").focus();return}
   const prix=parseFloat(String(d.prix).replace(",","."));
   if(!(prix>0)){$("#prix").classList.add("miss");$("#prix").focus();toast("Indique ton prix avant de publier.");return}
   if(!photos.length){toast("Ajoute au moins une photo.");return}
   const btn=$("#fillBtn");btn.disabled=true;const label=btn.textContent;btn.textContent="On prépare tes annonces…";
   try{
+    if(ids.includes("vestiaire")&&d.marque){
+      const r=await checkBrand(d.marque);
+      if(r.statut==="refusee"||r.statut==="inconnue"){
+        ids=ids.filter(id=>id!=="vestiaire");showVcBlock(r,d.marque,ids.length>0);
+        if(!ids.length)return;
+      }
+    }
     const ann=await getAnnonces();
     const imgs=[];for(const ph of photos.slice(0,MAX_PHOTOS))imgs.push(await toDataUrl(await shrink(ph.blob,1280,.82)));
     for(const id of ids){
@@ -581,12 +609,14 @@ $("#fillBtn").addEventListener("click",async()=>{
   }catch(e){toast("Impossible de préparer tes photos. Réessaie.")}
   finally{btn.disabled=false;btn.textContent=label}
 });
+$("#marque").addEventListener("input",()=>$("#vcBlock").classList.add("hidden"));
+$("#sites").addEventListener("change",()=>$("#vcBlock").classList.add("hidden"));
 $("#prix").addEventListener("input",()=>{$("#prix").classList.remove("miss");$("#prixHint").classList.add("hidden")});
 
 /* ---------- article suivant ---------- */
 $("#nextBtn").addEventListener("click",()=>{
   photos.forEach(p=>URL.revokeObjectURL(p.url));photos=[];article=uid();analysed=false;startedAt=0;aiAnnonces=null;aiFicheSnap=null;edited={};
-  FIELDS.forEach(f=>{$("#"+f).value=""});$("#etat").value="Très bon état";$("#prixHint").classList.add("hidden");$("#texts").open=false;
+  FIELDS.forEach(f=>{$("#"+f).value=""});$("#etat").value="Très bon état";$("#prixHint").classList.add("hidden");$("#vcBlock").classList.add("hidden");$("#texts").open=false;
   $("#after").classList.add("hidden");$("#stepFiche").classList.add("hidden");$("#stepPub").classList.add("hidden");
   renderPhotos();aiStatus("");scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
 });

@@ -14,7 +14,45 @@ async function cleanOld() {
   if (old.length) await chrome.storage.local.remove(old);
 }
 
+// Vestiaire Collective only takes some brands. Its own sell form loads this public list,
+// where refused brands (Zara, H&M, Shein…) are marked "banned". Kept here for a day.
+const VC_BRANDS = "https://apiv2.vestiairecollective.com/deposit/brands?isoCountry=FR&x-siteid=1&x-language=fr&x-currency=EUR";
+const brandKey = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "");
+async function vestiaireBrands() {
+  const { vcBrands } = await chrome.storage.local.get("vcBrands");
+  if (vcBrands && Date.now() - vcBrands.at < 24 * 3600 * 1000) return vcBrands;
+  const r = await fetch(VC_BRANDS);
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const list = (await r.json()).data || [];
+  if (list.length < 1000) throw new Error("liste incomplète");
+  const out = { at: Date.now(), ok: [], banned: [], names: {} };
+  for (const b of list) {
+    const k = brandKey(b.name);
+    if (!k) continue;
+    (b.banned ? out.banned : out.ok).push(k);
+    out.names[k] = b.name;
+  }
+  await chrome.storage.local.set({ vcBrands: out });
+  return out;
+}
+// "ok" | "refusee" | "inconnue" (not in Vestiaire's list) | "?" (couldn't check: let it through)
+async function checkVestiaireBrand(marque) {
+  const k = brandKey(marque);
+  if (!k) return { statut: "ok" };
+  try {
+    const l = await vestiaireBrands();
+    // a few names exist twice, one refused and one accepted: Vestiaire lets the seller pick the accepted one
+    if (l.ok.includes(k)) return { statut: "ok", nom: l.names[k] };
+    if (l.banned.includes(k)) return { statut: "refusee", nom: l.names[k] };
+    return { statut: "inconnue" };
+  } catch (e) { return { statut: "?" }; }
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
+  if (msg.type === "CHECK_BRAND") {
+    checkVestiaireBrand(msg.marque).then(reply);
+    return true;
+  }
   if (msg.type === "FILL") {
     const job = msg.job || {};
     const url = SITES[job.site];

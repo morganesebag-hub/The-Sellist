@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "The Sellist · Publier",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Remplit tes annonces Vinted, Leboncoin et Vestiaire Collective depuis The Sellist. Tu vérifies, tu publies.",
   "icons": {
     "16": "icons/icon-16.png",
@@ -67,6 +67,7 @@
     }
   ],
   "host_permissions": [
-    "https://the-sellist-ia.morgane-sebag.workers.dev/*"
+    "https://the-sellist-ia.morgane-sebag.workers.dev/*",
+    "https://apiv2.vestiairecollective.com/*"
   ]
 }

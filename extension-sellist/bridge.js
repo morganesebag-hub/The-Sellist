@@ -11,6 +11,12 @@ announce();
 window.addEventListener("message", (e) => {
   if (e.source !== window || !e.data || e.data.source !== "sellist-app") return;
   if (e.data.type === "PING") { announce(); return; }
+  if (e.data.type === "CHECK_BRAND") {
+    const done = (r) => window.postMessage({ source: "sellist-app-ext", type: "BRAND_RESULT", id: e.data.id, ...(r || { statut: "?" }) }, "*");
+    try { chrome.runtime.sendMessage({ type: "CHECK_BRAND", marque: e.data.marque }, (r) => done(chrome.runtime.lastError ? null : r)); }
+    catch (err) { done(null); }
+    return;
+  }
   if (e.data.type !== "FILL" || !e.data.job) return;
   const reqId = e.data.id;
   const answer = (ok, error) => window.postMessage({ source: "sellist-app-ext", type: "FILL_RESULT", id: reqId, ok, error }, "*");

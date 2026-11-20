@@ -118,6 +118,10 @@ details.texts summary{cursor:pointer;font-weight:500;color:var(--muted);font-siz
 .modal-card h3{font-size:1.3rem;margin-bottom:8px}
 .modal-card p{margin:0 0 10px;color:var(--muted);font-size:15px}
 .modal-card .row{display:grid;gap:10px;margin-top:16px}
+.modal-card fieldset{border:0;margin:14px 0 0;padding:0}
+.modal-card legend{font-weight:600;font-size:15px;margin-bottom:8px;padding:0}
+.modal-card .sites{margin:0}
+.modal-card textarea{width:100%;min-height:80px;margin-top:6px}
 .modal-card .err{color:var(--warn);font-size:14px;min-height:1.3em;margin:8px 0 0}
 .consent{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;color:var(--muted);margin:14px 0 0;cursor:pointer}
 .consent input{width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--vert)}
@@ -606,12 +610,49 @@ $("#fillBtn").addEventListener("click",async()=>{
     if(API_URL&&code())api("evenement",{action:"remplissage lancé",site:ids.map(id=>SITES[id].name.replace("Vestiaire Collective","Vestiaire")).join(", "),
       secondes:startedAt?Math.round((Date.now()-startedAt)/1000):""}).catch(()=>{});
     toast(ids.length>1?"Les onglets s’ouvrent. Vérifie chaque annonce, puis publie.":"L’onglet s’ouvre. Vérifie l’annonce, puis publie.");
+    if(!store.get("ts-avis"))avisPending={at:Date.now(),sites:ids.map(id=>SITES[id].name.replace("Vestiaire Collective","Vestiaire")).join(", ")};
   }catch(e){toast("Impossible de préparer tes photos. Réessaie.")}
   finally{btn.disabled=false;btn.textContent=label}
 });
 $("#marque").addEventListener("input",()=>$("#vcBlock").classList.add("hidden"));
 $("#sites").addEventListener("change",()=>$("#vcBlock").classList.add("hidden"));
 $("#prix").addEventListener("input",()=>{$("#prix").classList.remove("miss");$("#prixHint").classList.add("hidden")});
+
+/* ---------- avis après la première publication ----------
+   Quand la testeuse revient sur The Sellist après avoir rempli ses annonces (une seule fois). */
+let avisPending=null; // {at, sites}
+function askAvis(){
+  if(!avisPending||store.get("ts-avis")||$(".modal")||document.visibilityState!=="visible")return;
+  if(Date.now()-avisPending.at<15000)return; // le temps que les onglets s'ouvrent
+  const sites=avisPending.sites;avisPending=null;
+  const choix=(name,opts)=>`<div class="sites">${opts.map(o=>`<label class="site"><input type="radio" name="${name}" value="${esc(o)}"> ${esc(o)}</label>`).join("")}</div>`;
+  const m=document.createElement("div");m.className="modal";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Ton avis");
+  m.innerHTML=`<form class="modal-card" novalidate><h3>Alors, comment ça s’est passé ?</h3>
+    <p>Deux questions rapides sur ta première publication avec The Sellist. Ta réponse m’aide beaucoup.</p>
+    <fieldset><legend>Ton expérience</legend>${choix("exp",["Très bien","Correcte","Pas terrible"])}</fieldset>
+    <fieldset><legend>As-tu publié ton annonce ?</legend>${choix("pub",["Oui, sur tous les sites","Sur certains sites","Non, pas encore"])}</fieldset>
+    <fieldset class="hidden" id="avisWhy"><legend>Qu’est-ce qui t’a gênée ou bloquée ?</legend>
+      <textarea id="avisTxt" maxlength="150" placeholder="Ex. la taille ne s’est pas remplie sur Vinted, une page restait vide…"></textarea></fieldset>
+    <p class="err" id="avisErr" aria-live="polite"></p>
+    <div class="row"><button class="btn go" type="submit">Envoyer</button><button class="btn" type="button" data-r="later">Plus tard</button></div></form>`;
+  document.body.appendChild(m);
+  const val=n=>(m.querySelector(`input[name="${n}"]:checked`)||{}).value||"";
+  m.addEventListener("change",()=>{
+    const pb=val("exp")&&val("exp")!=="Très bien"||val("pub")&&val("pub")!=="Oui, sur tous les sites";
+    $("#avisWhy").classList.toggle("hidden",!pb);$("#avisErr").textContent="";
+  });
+  m.querySelector("form").addEventListener("submit",e=>{
+    e.preventDefault();
+    if(!val("exp")||!val("pub")){$("#avisErr").textContent="Choisis une réponse à chaque question.";return}
+    const txt=$("#avisWhy").classList.contains("hidden")?"":$("#avisTxt").value.trim().replace(/\s+/g," ");
+    store.set("ts-avis","1");
+    if(API_URL&&code())api("evenement",{action:"avis publication",site:sites,detail:[val("exp"),val("pub"),txt].filter(Boolean).join(" · ").slice(0,200)}).catch(()=>{});
+    m.remove();toast("Merci pour ton avis !");
+  });
+  m.addEventListener("click",e=>{if(e.target===m||e.target.closest('[data-r="later"]'))m.remove()});
+}
+document.addEventListener("visibilitychange",()=>setTimeout(askAvis,600));
+addEventListener("focus",()=>setTimeout(askAvis,600));
 
 /* ---------- article suivant ---------- */
 $("#nextBtn").addEventListener("click",()=>{

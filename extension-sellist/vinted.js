@@ -139,6 +139,15 @@ window.SellistVinted = (() => {
     return found.length > 0;
   }
 
+  // The price field is masked ("35,00 €"): a value set from script shows but isn't kept
+  // ("NaN €" / "doit être supérieur ou égal à 1.0"). Typing it as the keyboard would works.
+  async function typePrice(price, v) {
+    price.focus({ preventScroll: true }); price.select();
+    const typed = document.execCommand("insertText", false, v);
+    if (!typed || !price.value) setInput(price, v);
+    price.blur();
+  }
+
   // ---------- run ----------
   async function run(job, done, values, step) {
     const f = job.fiche || {};
@@ -159,14 +168,26 @@ window.SellistVinted = (() => {
     }
     const price = $t("price-input--input");
     if (price && values.prix && !price.value) {
-      // the price field is masked ("35,00 €"): a value set from script shows but isn't kept
-      // ("NaN €" / "doit être supérieur ou égal à 1.0"). Typing it as the keyboard would works.
       const v = String(values.prix).replace(".", ",");
-      price.focus(); price.select();
-      const typed = document.execCommand("insertText", false, v);
-      if (!typed || !price.value) setInput(price, v);
-      price.blur();
+      const hadFocus = document.hasFocus() && document.visibilityState === "visible";
+      await typePrice(price, v);
       done.prix = true;
+      await wait(800);
+      // Filled while this tab was behind the Leboncoin / Vestiaire tabs, Vinted can show "25,00 €"
+      // yet keep no price (« Le champ prix doit être supérieur ou égal à 1.0 »). Type it again
+      // as soon as the seller comes back to this tab.
+      const wrong = () => /prix doit/i.test(document.body.innerText) || parseFloat(price.value.replace(",", ".")) !== parseFloat(v.replace(",", "."));
+      if (!hadFocus || wrong()) {
+        const retry = async () => {
+          if (document.visibilityState !== "visible" || !document.hasFocus()) return;
+          removeEventListener("focus", retry); document.removeEventListener("visibilitychange", retry);
+          await wait(300);
+          if (document.activeElement && document.activeElement !== document.body && document.activeElement !== price) return; // she's typing elsewhere
+          await typePrice(price, v);
+        };
+        addEventListener("focus", retry); document.addEventListener("visibilitychange", retry);
+        await retry();
+      }
     }
     step();
     return { categorie: valueOf("catalog-select-dropdown"), taille: (document.querySelector('[data-testid^="category-size-"][data-testid$="-input"]') || {}).innerText || "" };

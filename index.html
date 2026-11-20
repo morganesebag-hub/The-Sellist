@@ -525,7 +525,7 @@ const desktop=()=>innerWidth>=700&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navi
 function chosenSites(){return [...document.querySelectorAll("#sites input:checked")].map(i=>i.value)}
 /* Version de l'extension installée (annoncée par bridge.js depuis la 0.5.6 ; avant, rien).
    À mettre à jour à chaque nouvelle version publiée de l'extension. */
-const EXT_VERSION="0.5.9";
+const EXT_VERSION="0.5.10";
 const extOutdated=()=>{
   const v=(document.documentElement.dataset.sellistVersion||"0").split(".").map(Number),w=EXT_VERSION.split(".").map(Number);
   for(let i=0;i<3;i++){if((v[i]||0)!==(w[i]||0))return (v[i]||0)<(w[i]||0)}

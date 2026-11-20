@@ -68,3 +68,7 @@ Read only: nothing was saved or published.
 ## 2026-11-17 · Vestiaire brands
 - Vestiaire's sell form loads every brand from `https://apiv2.vestiairecollective.com/deposit/brands?isoCountry=FR&x-siteid=1&x-language=fr&x-currency=EUR` (public, no login, about 1.8 MB, 17 189 brands). Each has `banned: true|false` (3 491 refused: Zara, H&M, Shein, Kiabi, Mango, Uniqlo…). Choosing a banned brand shows « Nous n'acceptons désormais plus d'articles de cette marque à la vente. »
 - The extension (background.js `CHECK_BRAND`) keeps the list for a day and answers ok / refusee / inconnue. A few names exist twice (one refused, one accepted): accepted wins. If the list can't be loaded, the check lets Vestiaire through.
+
+## 2026-11-20
+- Vinted price (`price-input--input`) is a masked field ("35,00 €"). A value set through the native setter shows, but Vinted keeps "NaN €" and says « Le champ prix doit être supérieur ou égal à 1.0 ». `document.execCommand("insertText")` after focus + select is kept.
+- Vestiaire step 1: the category list (`#preductAddCategory`) fills from Vestiaire's catalog after the page shows. step1 now waits for the options, checks the choice held, and retries on the next ticks (up to 30).

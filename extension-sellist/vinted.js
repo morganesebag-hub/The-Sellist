@@ -158,7 +158,16 @@ window.SellistVinted = (() => {
       done.matiere = await multi("category-material-multi-list", f.matiere, 3); step();
     }
     const price = $t("price-input--input");
-    if (price && values.prix && !price.value) { setInput(price, String(values.prix).replace(".", ",")); done.prix = true; }
+    if (price && values.prix && !price.value) {
+      // the price field is masked ("35,00 €"): a value set from script shows but isn't kept
+      // ("NaN €" / "doit être supérieur ou égal à 1.0"). Typing it as the keyboard would works.
+      const v = String(values.prix).replace(".", ",");
+      price.focus(); price.select();
+      const typed = document.execCommand("insertText", false, v);
+      if (!typed || !price.value) setInput(price, v);
+      price.blur();
+      done.prix = true;
+    }
     step();
     return { categorie: valueOf("catalog-select-dropdown"), taille: (document.querySelector('[data-testid^="category-size-"][data-testid$="-input"]') || {}).innerText || "" };
   }

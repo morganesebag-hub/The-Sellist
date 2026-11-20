@@ -47,17 +47,32 @@ window.SellistVestiaire = (() => {
 
   // ---------- step 1: type of item and brand ----------
   async function step1(f, done) {
-    const sel = document.getElementById("preductAddCategory");
-    if (!sel || done.v1) return;
-    done.v1 = true;
-    const g = gender(f);
-    const radio = [...document.querySelectorAll('input[name="universe"]')].find((r) => norm(r.id).includes(g));
-    if (radio && !radio.checked) { press(radio.closest("label") || radio); await wait(400); }
-    const names = [...sel.options].slice(1).map((o) => o.text.trim());
-    const pick = bestByWords(names, words(f));
-    if (pick) { setSelect(sel, (o) => o.text.trim() === pick); done.categorie = true; await wait(500); }
+    const sel = () => document.getElementById("preductAddCategory");
+    if (!sel() || done.v1) return;
+    // the categories arrive from Vestiaire after the page shows: keep trying on the next ticks
+    // until the choice holds (it once stayed empty for "Boucles d'oreilles")
+    done.v1tries = (done.v1tries || 0) + 1;
+    if (done.v1tries > 30) { done.v1 = true; return; }
+    if (sel().options.length < 2) return;
+    if (!done.v1universe) {
+      const g = gender(f);
+      const radio = [...document.querySelectorAll('input[name="universe"]')].find((r) => norm(r.id).includes(g));
+      if (radio && !radio.checked) { press(radio.closest("label") || radio); await wait(800); }
+      done.v1universe = true;
+      if (sel().options.length < 2) return;
+    }
+    if (!done.v1cat) {
+      const pick = bestByWords([...sel().options].slice(1).map((o) => o.text.trim()), words(f));
+      if (pick) {
+        setSelect(sel(), (o) => o.text.trim() === pick);
+        await wait(700);
+        if (!sel() || (sel().selectedOptions[0] || {}).text?.trim() !== pick) return; // not kept: next tick
+        done.categorie = true;
+      }
+      done.v1cat = true;
+    }
     const b = document.getElementById("depositForm__form__brands-input");
-    if (b && f.marque) {
+    if (b && f.marque && !done.marque) {
       b.focus(); setInput(b, f.marque);
       const want = norm(f.marque);
       for (let t = 0; t < 4000; t += 200) {
@@ -66,6 +81,7 @@ window.SellistVestiaire = (() => {
         await wait(200);
       }
     }
+    done.v1 = true;
   }
 
   // ---------- details ----------

@@ -570,6 +570,14 @@ function checkBrand(marque){
     window.postMessage({source:"sellist-app",type:"CHECK_BRAND",id,marque},"*");
   });
 }
+// Vestiaire ne vend que de la mode : pas d'électronique, d'équipement bébé, de maison, de jouets…
+// (formulaire lu le 21/11/2026 : uniquement vêtements, chaussures, sacs, accessoires, bijoux, montres)
+const HORS_MODE=/\b(telephones?|smartphones?|iphone|ipad|tablettes? (tactile|numerique|android)|tablettes?$|ordinateurs?|pc|macbook|laptop|consoles?|playstation|ps[2345]|xbox|nintendo|jeux? video|casques? (audio|gaming|bluetooth|sans fil)|ecouteurs|airpods|enceintes?|appareils? photo|cameras?|televiseurs?|television|tv|montres? connectees?|apple watch|drones?|liseuses?|kindle|imprimantes?|claviers?|chargeurs?|sieges? auto|rehausseurs?|poussettes?|landaus?|cosy|maxi-cosi|transats?|chaises? hautes?|lits? (bebe|parapluie)|parcs? bebe|babyphones?|biberons?|sterilisateurs?|meubles?|chaises?|tables?|canapes?|fauteuils?|lampes?|vaisselle|assiettes?|aspirateurs?|cafetieres?|mixeurs?|jouets?|peluches?|lego|puzzles?|jeux? de societe|livres?|romans?|bd|dvd|cd|vinyles?|velos?|trottinettes?|skateboards?|raquettes?)\b/;
+function horsMode(d){return HORS_MODE.test(String([d.titre,d.categorie].join(" ")).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’']/g," ").replace(/\s+/g," ").trim())}
+function showVcHorsMode(others){
+  $("#vcBlock").innerHTML=`<strong>Vestiaire Collective n’accepte que la mode</strong> : vêtements, chaussures, sacs, accessoires, bijoux et montres. Il n’a pas de catégorie pour cet article. ${others?"On n’ouvre pas Vestiaire et on remplit tes autres sites.":"On n’ouvre pas Vestiaire : choisis un autre site."}`;
+  $("#vcBlock").classList.remove("hidden");
+}
 function showVcBlock(r,marque,others){
   const m=esc(r.nom||marque);
   const why=r.statut==="refusee"
@@ -590,6 +598,10 @@ $("#fillBtn").addEventListener("click",async()=>{
   if(!photos.length){toast("Ajoute au moins une photo.");return}
   const btn=$("#fillBtn");btn.disabled=true;const label=btn.textContent;btn.textContent="On prépare tes annonces…";
   try{
+    if(ids.includes("vestiaire")&&horsMode(d)){
+      ids=ids.filter(id=>id!=="vestiaire");showVcHorsMode(ids.length>0);
+      if(!ids.length)return;
+    }
     if(ids.includes("vestiaire")&&d.marque){
       const r=await checkBrand(d.marque);
       if(r.statut==="refusee"||r.statut==="inconnue"){
@@ -614,7 +626,7 @@ $("#fillBtn").addEventListener("click",async()=>{
   }catch(e){toast("Impossible de préparer tes photos. Réessaie.")}
   finally{btn.disabled=false;btn.textContent=label}
 });
-$("#marque").addEventListener("input",()=>$("#vcBlock").classList.add("hidden"));
+["#marque","#titre","#categorie"].forEach(k=>$(k).addEventListener("input",()=>$("#vcBlock").classList.add("hidden")));
 $("#sites").addEventListener("change",()=>$("#vcBlock").classList.add("hidden"));
 $("#prix").addEventListener("input",()=>{$("#prix").classList.remove("miss");$("#prixHint").classList.add("hidden")});
 
